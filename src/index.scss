@@ -1,0 +1,42 @@
+@import './variables.scss';
+
+html {
+  height: 100%;
+  background-color: #f3f3f3 !important;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1,
+h2 {
+  font-size: $font-xl;
+}
+
+.spacer {
+  flex-grow: 1;
+}
+
+.notify-success {
+  background-color: $success;
+}
+.notify-error {
+  background-color: $error;
+}
+.notify-warning {
+  background-color: $warning !important;
+}
+.notify-info {
+  background-color: $info;
+}
