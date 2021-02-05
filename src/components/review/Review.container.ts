@@ -1,7 +1,11 @@
-import { RootState } from '../../store/state';
+import { ReviewPhase, RootState } from '../../store/state';
 import { connect } from 'react-redux';
 import Review from './Review';
-import { NotificationActions } from '../../actions/actions';
+import {
+  NotificationActions,
+  ReviewAppActions,
+  ReviewActionsThunk,
+} from '../../actions/actions';
 
 const mapStateToProps = (state: RootState) => {
   return {
@@ -16,6 +20,16 @@ const mapDispatchToProps = (_dispatch: any) => {
   return {
     removeNotification: (key: string) => {
       _dispatch(NotificationActions.removeNotification(key));
+    },
+    updateKeyboardDefinitionList: () => {
+      _dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.processing));
+      _dispatch(ReviewActionsThunk.updateKeyboardDefinitionList());
+    },
+    updateKeyboardDefinitionDetail: (definitionId: string) => {
+      _dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.processing));
+      _dispatch(
+        ReviewActionsThunk.updateKeyboardDefinitionDetail(definitionId)
+      );
     },
   };
 };

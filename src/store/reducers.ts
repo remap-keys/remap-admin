@@ -7,6 +7,15 @@ import {
   NOTIFICATION_ADD_SUCCESS,
   NOTIFICATION_ADD_WARN,
   NOTIFICATION_REMOVE,
+  REVIEW_APP_ACTIONS,
+  REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_DETAIL,
+  REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_LIST,
+  REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS,
+  REVIEW_APP_UPDATE_REVIEW_PHASE,
+  REVIEW_DEFINITION_LIST_ACTIONS,
+  REVIEW_DEFINITION_DETAIL_ACTIONS,
+  REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_STATUS,
+  REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON,
 } from '../actions/actions';
 import { WritableDraft } from 'immer/dist/types/types-external';
 
@@ -16,8 +25,53 @@ const reducers = (state: RootState = INIT_STATE, action: Action) =>
   immer(state, (draft) => {
     if (action.type.startsWith(NOTIFICATION_ACTIONS)) {
       notificationReducer(action, draft);
+    } else if (action.type.startsWith(REVIEW_APP_ACTIONS)) {
+      reviewAppReducer(action, draft);
+    } else if (action.type.startsWith(REVIEW_DEFINITION_LIST_ACTIONS)) {
+      reviewDefinitionListReducer(action, draft);
+    } else if (action.type.startsWith(REVIEW_DEFINITION_DETAIL_ACTIONS)) {
+      reviewDefinitionDetailReducer(action, draft);
     }
   });
+
+const reviewAppReducer = (action: Action, draft: WritableDraft<RootState>) => {
+  switch (action.type) {
+    case REVIEW_APP_UPDATE_REVIEW_PHASE:
+      draft.review.app.reviewPhase = action.value;
+      break;
+  }
+};
+
+const reviewDefinitionListReducer = (
+  action: Action,
+  draft: WritableDraft<RootState>
+) => {
+  switch (action.type) {
+    case REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_LIST:
+      draft.entities.keyboardDefinitionList = action.value;
+      break;
+    case REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS:
+      draft.review.definitionlist.keyboardDefinitionStatus = action.value;
+      break;
+  }
+};
+
+const reviewDefinitionDetailReducer = (
+  action: Action,
+  draft: WritableDraft<RootState>
+) => {
+  switch (action.type) {
+    case REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_DETAIL:
+      draft.entities.keyboardDefinitionDetail = action.value;
+      break;
+    case REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_STATUS:
+      draft.review.definitiondetail.keyboardDefinitionStatus = action.value;
+      break;
+    case REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON:
+      draft.review.definitiondetail.rejectReason = action.value;
+      break;
+  }
+};
 
 const notificationReducer = (
   action: Action,

@@ -4,6 +4,8 @@ import './Content.scss';
 import { CircularProgress } from '@material-ui/core';
 import Footer from '../../common/footer/Footer';
 import { IReviewPhase, ReviewPhase } from '../../../store/state';
+import DefinitionList from '../definitionlist/DefinitionList.container';
+import DefinitionDetail from '../definitiondetail/DefinitionDetail.container';
 
 type ContentState = {};
 type OwnProps = {};
@@ -37,6 +39,10 @@ function Contents(props: ContentsProps) {
     case ReviewPhase.init:
     case ReviewPhase.processing:
       return <PhaseProcessing />;
+    case ReviewPhase.list:
+      return <DefinitionList />;
+    case ReviewPhase.detail:
+      return <DefinitionDetail />;
     default:
       throw new Error(`Unknown state.app.phase value: ${props.phase}`);
   }
