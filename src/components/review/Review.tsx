@@ -6,12 +6,17 @@ import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
 import Header from './header/Header.container';
 import Content from './content/Content.container';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
+type ParamsType = {
+  definitionId: string;
+};
 type OwnProps = {};
 type ReviewProps = OwnProps &
   Partial<ReviewStateType> &
   Partial<ReviewActionsType> &
-  ProviderContext;
+  ProviderContext &
+  RouteComponentProps<ParamsType>;
 type OwnState = {
   signedIn: boolean;
 };
@@ -71,7 +76,12 @@ class Review extends React.Component<ReviewProps, OwnState> {
               signedIn: true,
             });
             this.updateNotifications();
-            // TODO
+            const definitionId = this.props.match.params.definitionId;
+            if (definitionId) {
+              this.props.updateKeyboardDefinitionDetail!(definitionId);
+            } else {
+              this.props.updateKeyboardDefinitionList!();
+            }
           } else {
             this.setState({ signedIn: false });
           }
@@ -114,4 +124,4 @@ class Review extends React.Component<ReviewProps, OwnState> {
   }
 }
 
-export default withSnackbar(Review);
+export default withRouter(withSnackbar(Review));

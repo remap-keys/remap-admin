@@ -1,3 +1,11 @@
+import { IReviewPhase, ReviewPhase, RootState } from '../store/state';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import {
+  IKeyboardDefinition,
+  IKeyboardDefinitionDetail,
+  IKeyboardDefinitionStatus,
+} from '../services/storage/Storage';
+
 const NotifyType = ['success', 'warning', 'error', 'info'] as const;
 export type NotificationType = typeof NotifyType[number];
 export type NotificationItem = {
@@ -47,5 +55,167 @@ export const NotificationActions = {
       type: NOTIFICATION_REMOVE,
       value: key,
     };
+  },
+};
+
+export const REVIEW_APP_ACTIONS = '@ReviewApp';
+export const REVIEW_APP_UPDATE_REVIEW_PHASE = `${REVIEW_APP_ACTIONS}/UpdateReviewPhase`;
+export const ReviewAppActions = {
+  updateReviewPhase: (reviewPhase: IReviewPhase) => {
+    return {
+      type: REVIEW_APP_UPDATE_REVIEW_PHASE,
+      value: reviewPhase,
+    };
+  },
+};
+
+export const REVIEW_DEFINITION_LIST_ACTIONS = '@ReviewDefinitionList';
+export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_LIST = `${REVIEW_DEFINITION_LIST_ACTIONS}/UpdateKeyboardDefinitionList`;
+export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS = `${REVIEW_DEFINITION_LIST_ACTIONS}/UpdateKeyboardDefinitionStatus`;
+export const ReviewDefinitionListActions = {
+  updateKeyboardDefinitionList: (
+    keyboardDefinitionList: IKeyboardDefinition[]
+  ) => {
+    return {
+      type: REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_LIST,
+      value: keyboardDefinitionList,
+    };
+  },
+  updateKeyboardDefinitionStatus: (status: IKeyboardDefinitionStatus) => {
+    return {
+      type: REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS,
+      value: status,
+    };
+  },
+};
+
+export const REVIEW_DEFINITION_DETAIL_ACTIONS = '@ReviewDefinitionDetail';
+export const REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_DETAIL = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateKeyboardDefinitionDetail`;
+export const REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_STATUS = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateKeyboardDefinitionStatus`;
+export const REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateRejectReason`;
+export const ReviewDefinitionDetailActions = {
+  updateKeyboardDefinitionDetail: (
+    keyboardDefinitionDetail: IKeyboardDefinitionDetail
+  ) => {
+    return {
+      type: REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_DETAIL,
+      value: keyboardDefinitionDetail,
+    };
+  },
+  updateKeyboardDefinitionStatus: (status: IKeyboardDefinitionStatus) => {
+    return {
+      type: REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_STATUS,
+      value: status,
+    };
+  },
+  updateRejectReason: (reason: string) => {
+    return {
+      type: REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON,
+      value: reason,
+    };
+  },
+};
+
+type ActionTypes = ReturnType<
+  | typeof ReviewAppActions[keyof typeof ReviewAppActions]
+  | typeof ReviewDefinitionListActions[keyof typeof ReviewDefinitionListActions]
+  | typeof ReviewDefinitionDetailActions[keyof typeof ReviewDefinitionDetailActions]
+  | typeof NotificationActions[keyof typeof NotificationActions]
+>;
+type ThunkPromiseAction<T> = ThunkAction<
+  Promise<T>,
+  RootState,
+  undefined,
+  ActionTypes
+>;
+export const ReviewActionsThunk = {
+  // eslint-disable-next-line no-undef
+  updateKeyboardDefinitionList: (): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    // eslint-disable-next-line no-unused-vars
+    getState: () => RootState
+  ) => {
+    const { storage, review } = getState();
+    const definitionListResult = await storage.instance.fetchKeyboardDefinitionList(
+      review.definitionlist.keyboardDefinitionStatus
+    );
+    if (!definitionListResult.success) {
+      console.error(definitionListResult.cause!);
+      dispatch(
+        NotificationActions.addError(
+          definitionListResult.error!,
+          definitionListResult.cause
+        )
+      );
+      return;
+    }
+    dispatch(
+      ReviewDefinitionListActions.updateKeyboardDefinitionList(
+        definitionListResult.keyboardDefinitionList!
+      )
+    );
+    dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.list));
+  },
+
+  updateKeyboardDefinitionDetail: (
+    definitionId: string
+  ): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    getState: () => RootState
+  ) => {
+    const { storage, review } = getState();
+    const definitionDetailResult = await storage.instance.fetchKeyboardDefinitionDetail(
+      definitionId
+    );
+    if (!definitionDetailResult.success) {
+      console.error(definitionDetailResult.cause!);
+      dispatch(
+        NotificationActions.addError(
+          definitionDetailResult.error!,
+          definitionDetailResult.cause
+        )
+      );
+      return;
+    }
+    dispatch(
+      ReviewDefinitionDetailActions.updateKeyboardDefinitionDetail(
+        definitionDetailResult.keyboardDefinitionDetail!
+      )
+    );
+    dispatch(
+      ReviewDefinitionDetailActions.updateKeyboardDefinitionStatus(
+        definitionDetailResult.keyboardDefinitionDetail!.status
+      )
+    );
+    dispatch(
+      ReviewDefinitionDetailActions.updateRejectReason(
+        definitionDetailResult.keyboardDefinitionDetail!.rejectReason || ''
+      )
+    );
+    dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.detail));
+  },
+
+  reviewKeyboardDefinition: (): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    getState: () => RootState
+  ) => {
+    const { storage, entities, review } = getState();
+    const definitionId = entities.keyboardDefinitionDetail!.id;
+    const status = review.definitiondetail.keyboardDefinitionStatus;
+    const rejectReason = review.definitiondetail.rejectReason;
+    const result = await storage.instance.updateKeyboardDefinitionStatus(
+      definitionId,
+      status,
+      rejectReason
+    );
+    if (!result.success) {
+      console.error(result.cause!);
+      dispatch(NotificationActions.addError(result.error!, result.cause));
+      return;
+    }
+    dispatch(
+      await ReviewActionsThunk.updateKeyboardDefinitionDetail(definitionId)
+    );
+    dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.detail));
   },
 };

@@ -1,6 +1,12 @@
 import firebase from 'firebase';
 import { IAuth } from '../auth/Auth';
-import { IStorage } from '../storage/Storage';
+import {
+  IFetchKeyboardDefinitionDetailResult,
+  IFetchKeyboardDefinitionListResult,
+  IKeyboardDefinitionStatus,
+  IResult,
+  IStorage,
+} from '../storage/Storage';
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -11,9 +17,12 @@ const config = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
+const FUNCTIONS_REGION = 'asia-northeast1';
+
 export class FirebaseProvider implements IAuth, IStorage {
   private db: firebase.firestore.Firestore;
   private auth: firebase.auth.Auth;
+  private functions: firebase.functions.Functions;
   private unsubscribeAuthStateChanged?: firebase.Unsubscribe;
 
   constructor() {
@@ -21,6 +30,7 @@ export class FirebaseProvider implements IAuth, IStorage {
     const app = firebase.app();
     this.db = app.firestore();
     this.auth = app.auth();
+    this.functions = app.functions(FUNCTIONS_REGION);
   }
 
   async fetchAdminUsers(): Promise<string[]> {
@@ -32,6 +42,134 @@ export class FirebaseProvider implements IAuth, IStorage {
       return documentSnapshot.data()!.users;
     } else {
       return [];
+    }
+  }
+
+  async fetchKeyboardDefinitionList(
+    status: IKeyboardDefinitionStatus
+  ): Promise<IFetchKeyboardDefinitionListResult> {
+    try {
+      const command = this.functions.httpsCallable(
+        'fetchKeyboardDefinitionListByStatus'
+      );
+      const httpsCallableResult = await command({
+        status,
+      });
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+          keyboardDefinitionList: result.keyboardDefinitionList.map(
+            (definition: any) => {
+              return {
+                id: definition.id,
+                authorUid: definition.authorUid,
+                name: definition.name,
+                vendorId: definition.vendorId,
+                productId: definition.productId,
+                productName: definition.productName,
+                status: definition.status,
+                json: definition.json,
+                rejectReason: definition.rejectReason,
+                createdAt: new Date(definition.createdAt),
+                updatedAt: new Date(definition.updatedAt),
+              };
+            }
+          ),
+        };
+      } else {
+        return {
+          success: false,
+          error: `Fetching a keyboard definition list failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Fetching a keyboard definition list failed.',
+        cause: error,
+      };
+    }
+  }
+
+  async fetchKeyboardDefinitionDetail(
+    id: string
+  ): Promise<IFetchKeyboardDefinitionDetailResult> {
+    try {
+      const command = this.functions.httpsCallable(
+        'fetchKeyboardDefinitionDetailById'
+      );
+      const httpsCallableResult = await command({
+        id,
+      });
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+          keyboardDefinitionDetail: {
+            id: result.keyboardDefinitionDetail.id,
+            authorUid: result.keyboardDefinitionDetail.authorUid,
+            name: result.keyboardDefinitionDetail.name,
+            vendorId: result.keyboardDefinitionDetail.vendorId,
+            productId: result.keyboardDefinitionDetail.productId,
+            productName: result.keyboardDefinitionDetail.productName,
+            status: result.keyboardDefinitionDetail.status,
+            json: result.keyboardDefinitionDetail.json,
+            rejectReason: result.keyboardDefinitionDetail.rejectReason,
+            createdAt: new Date(result.keyboardDefinitionDetail.createdAt),
+            updatedAt: new Date(result.keyboardDefinitionDetail.updatedAt),
+            githubUid: result.keyboardDefinitionDetail.githubUid,
+            githubDisplayName:
+              result.keyboardDefinitionDetail.githubDisplayName,
+            githubEmail: result.keyboardDefinitionDetail.githubEmail,
+          },
+        };
+      } else {
+        return {
+          success: false,
+          error: `Fetching a keyboard definition detail failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Fetching a keyboard definition detail failed.',
+        cause: error,
+      };
+    }
+  }
+
+  async updateKeyboardDefinitionStatus(
+    id: string,
+    status: IKeyboardDefinitionStatus,
+    rejectReason: string
+  ): Promise<IResult> {
+    try {
+      const command = this.functions.httpsCallable(
+        'updateKeyboardDefinitionStatus'
+      );
+      const httpsCallableResult = await command({
+        id,
+        status,
+        rejectReason,
+      });
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Updating a keyboard definition status failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Updating a keyboard definition status failed.',
+        cause: error,
+      };
     }
   }
 
