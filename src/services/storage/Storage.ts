@@ -46,6 +46,7 @@ export interface IFetchKeyboardDefinitionDetailResult extends IResult {
   keyboardDefinitionDetail?: IKeyboardDefinitionDetail;
 }
 
+/* eslint-disable no-unused-vars */
 export interface IStorage {
   fetchAdminUsers(): Promise<string[]>;
   fetchKeyboardDefinitionList(
@@ -60,3 +61,4 @@ export interface IStorage {
     rejectReason: string
   ): Promise<IResult>;
 }
+/* eslint-enable no-unused-vars */

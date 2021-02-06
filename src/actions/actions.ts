@@ -163,7 +163,7 @@ export const ReviewActionsThunk = {
     dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
     getState: () => RootState
   ) => {
-    const { storage, review } = getState();
+    const { storage } = getState();
     const definitionDetailResult = await storage.instance.fetchKeyboardDefinitionDetail(
       definitionId
     );
