@@ -8,17 +8,13 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import App from './App';
 import reducers from './store/reducers';
 import reportWebVitals from './reportWebVitals';
-import { errorReportingLogger } from './utils/ErrorReportingLogger';
 import moment from 'moment-timezone';
 
 moment.tz.setDefault('Asia/Tokyo');
 
 const store = createStore(
   reducers,
-  composeWithDevTools(
-    applyMiddleware(thunk),
-    applyMiddleware(errorReportingLogger)
-  )
+  composeWithDevTools(applyMiddleware(thunk))
 );
 
 ReactDOM.render(
