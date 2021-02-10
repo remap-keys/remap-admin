@@ -9,12 +9,16 @@ import App from './App';
 import reducers from './store/reducers';
 import reportWebVitals from './reportWebVitals';
 import moment from 'moment-timezone';
+import { errorReportingLogger } from './utils/ErrorReportingLogger';
 
 moment.tz.setDefault('Asia/Tokyo');
 
 const store = createStore(
   reducers,
-  composeWithDevTools(applyMiddleware(thunk))
+  composeWithDevTools(
+    applyMiddleware(thunk),
+    applyMiddleware(errorReportingLogger)
+  )
 );
 
 ReactDOM.render(
