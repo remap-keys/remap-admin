@@ -295,6 +295,17 @@ export default class DefinitionDetail extends React.Component<
                         }}
                       />
                     </div>
+                    <div className="definition-detail-form-row">
+                      <TextField
+                        id="definition-detail-github-display-link"
+                        label="GitHub Account Page"
+                        variant="outlined"
+                        value={this.props.keyboardDefinitionDetail!.githubUrl}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </div>
                   </div>
                   <div className="definition-detail-form">
                     <div className="definition-detail-form-row">
