@@ -123,6 +123,20 @@ export class FirebaseProvider implements IAuth, IStorage {
               result.keyboardDefinitionDetail.githubDisplayName,
             githubEmail: result.keyboardDefinitionDetail.githubEmail,
             githubUrl: result.keyboardDefinitionDetail.githubUrl,
+            firmwareCodePlace:
+              result.keyboardDefinitionDetail.firmwareCodePlace,
+            qmkRepositoryFirstPullRequestUrl:
+              result.keyboardDefinitionDetail.qmkRepositoryFirstPullRequestUrl,
+            forkedRepositoryUrl:
+              result.keyboardDefinitionDetail.forkedRepositoryUrl,
+            forkedRepositoryEvidence:
+              result.keyboardDefinitionDetail.forkedRepositoryEvidence,
+            otherPlaceHowToGet:
+              result.keyboardDefinitionDetail.otherPlaceHowToGet,
+            otherPlaceSourceCodeEvidence:
+              result.keyboardDefinitionDetail.otherPlaceSourceCodeEvidence,
+            otherPlacePublisherEvidence:
+              result.keyboardDefinitionDetail.otherPlacePublisherEvidence,
           },
         };
       } else {

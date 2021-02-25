@@ -26,6 +26,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import {
+  FirmwareCodePlace,
   IKeyboardDefinitionStatus,
   KeyboardDefinitionStatus,
 } from '../../../services/storage/Storage';
@@ -160,6 +161,136 @@ export default class DefinitionDetail extends React.Component<
     }
   }
 
+  renderEvidenceForQmkRepository() {
+    if (
+      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
+      FirmwareCodePlace.qmk
+    ) {
+      return (
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-qmk-repository-pull-request-url"
+            label="1st Pull Request URL"
+            variant="outlined"
+            value={
+              this.props.keyboardDefinitionDetail!
+                .qmkRepositoryFirstPullRequestUrl || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  renderEvidenceForForkedRepository() {
+    if (
+      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
+      FirmwareCodePlace.forked
+    ) {
+      return (
+        <React.Fragment>
+          <div className="definition-detail-form-row">
+            <TextField
+              id="definition-detail-forked-repository-url"
+              label="Forked Repository URL"
+              variant="outlined"
+              value={
+                this.props.keyboardDefinitionDetail!.forkedRepositoryUrl || ''
+              }
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+          <div className="definition-detail-form-row">
+            <TextField
+              id="definition-detail-forked-repository-evidence"
+              label="Evidence Information"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={
+                this.props.keyboardDefinitionDetail!.forkedRepositoryEvidence ||
+                ''
+              }
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+        </React.Fragment>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  renderEvidenceForOtherPlace() {
+    if (
+      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
+      FirmwareCodePlace.other
+    ) {
+      return (
+        <React.Fragment>
+          <div className="definition-detail-form-row">
+            <TextField
+              id="definition-detail-other-place-how-to-get"
+              label="How to Get the Source Code"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={
+                this.props.keyboardDefinitionDetail!.otherPlaceHowToGet || ''
+              }
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+          <div className="definition-detail-form-row">
+            <TextField
+              id="definition-detail-other-place-source-code-evidence"
+              label="Evidence Information for Source Code"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={
+                this.props.keyboardDefinitionDetail!
+                  .otherPlaceSourceCodeEvidence || ''
+              }
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+          <div className="definition-detail-form-row">
+            <TextField
+              id="definition-detail-other-place-publisher-evidence"
+              label="Evidence Information for Publisher"
+              variant="outlined"
+              multiline
+              rows={4}
+              value={
+                this.props.keyboardDefinitionDetail!
+                  .otherPlacePublisherEvidence || ''
+              }
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+        </React.Fragment>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
     let activeStep;
     switch (this.props.keyboardDefinitionDetail!.status) {
@@ -179,6 +310,17 @@ export default class DefinitionDetail extends React.Component<
         );
     }
     const completed = activeStep === 2;
+    const firmwareCodePlace =
+      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
+      FirmwareCodePlace.qmk
+        ? 'GitHub: qmk/qmk_firmware'
+        : this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
+          FirmwareCodePlace.forked
+        ? 'GitHub: Forked repository'
+        : this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
+          FirmwareCodePlace.other
+        ? 'Other'
+        : 'Unknown';
     return (
       <React.Fragment>
         <div className="definition-detail-wrapper">
@@ -308,6 +450,20 @@ export default class DefinitionDetail extends React.Component<
                     </div>
                   </div>
                   <div className="definition-detail-form">
+                    <div className="definition-detail-form-row">
+                      <TextField
+                        id="definition-detail-firmware-code-place"
+                        label="Where is the source code of this keyboard's firmware?"
+                        variant="outlined"
+                        value={firmwareCodePlace}
+                        InputProps={{
+                          readOnly: true,
+                        }}
+                      />
+                    </div>
+                    {this.renderEvidenceForQmkRepository()}
+                    {this.renderEvidenceForForkedRepository()}
+                    {this.renderEvidenceForOtherPlace()}
                     <div className="definition-detail-form-row">
                       <FormControl>
                         <InputLabel id="definition-detail-status-select-label">
