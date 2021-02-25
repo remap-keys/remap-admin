@@ -18,6 +18,13 @@ export const KeyboardDefinitionStatus: {
   approved: 'approved',
 };
 
+export type IFirmwareCodePlace = 'qmk' | 'forked' | 'other';
+export const FirmwareCodePlace: { [p: string]: IFirmwareCodePlace } = {
+  qmk: 'qmk',
+  forked: 'forked',
+  other: 'other',
+};
+
 export interface IKeyboardDefinition {
   readonly id: string;
   readonly authorUid: string;
@@ -29,6 +36,13 @@ export interface IKeyboardDefinition {
   readonly json: string;
   readonly rejectReason: string | undefined;
   readonly githubUrl: string;
+  readonly firmwareCodePlace: IFirmwareCodePlace;
+  readonly qmkRepositoryFirstPullRequestUrl: string;
+  readonly forkedRepositoryUrl: string;
+  readonly forkedRepositoryEvidence: string;
+  readonly otherPlaceHowToGet: string;
+  readonly otherPlaceSourceCodeEvidence: string;
+  readonly otherPlacePublisherEvidence: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }
