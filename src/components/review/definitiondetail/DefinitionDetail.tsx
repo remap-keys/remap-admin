@@ -494,6 +494,9 @@ export default class DefinitionDetail extends React.Component<
                         multiline
                         rowsMax={4}
                         value={this.props.rejectReason}
+                        onChange={(e) =>
+                          this.props.updateRejectReason!(e.target.value)
+                        }
                         variant="outlined"
                       />
                     </div>
