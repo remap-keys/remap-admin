@@ -8,6 +8,7 @@ import {
   IStorage,
   KeyboardDefinitionStatus,
 } from '../services/storage/Storage';
+import buildInfo from '../assets/files/build-info.json';
 
 export type IReviewPhase = 'init' | 'list' | 'processing' | 'detail';
 // eslint-disable-next-line no-unused-vars
@@ -24,6 +25,7 @@ export type RootState = {
     keyboardDefinitionDetail: IKeyboardDefinitionDetail | null;
   };
   app: {
+    buildNumber: number;
     notifications: NotificationItem[];
   };
   auth: {
@@ -54,6 +56,7 @@ export const INIT_STATE: RootState = {
     keyboardDefinitionDetail: null,
   },
   app: {
+    buildNumber: buildInfo.buildNumber,
     notifications: [],
   },
   auth: {
