@@ -72,6 +72,7 @@ export const ReviewAppActions = {
 export const REVIEW_DEFINITION_LIST_ACTIONS = '@ReviewDefinitionList';
 export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_LIST = `${REVIEW_DEFINITION_LIST_ACTIONS}/UpdateKeyboardDefinitionList`;
 export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS = `${REVIEW_DEFINITION_LIST_ACTIONS}/UpdateKeyboardDefinitionStatus`;
+export const REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER = `${REVIEW_DEFINITION_LIST_ACTIONS}/NameFilter`;
 export const ReviewDefinitionListActions = {
   updateKeyboardDefinitionList: (
     keyboardDefinitionList: IKeyboardDefinition[]
@@ -85,6 +86,12 @@ export const ReviewDefinitionListActions = {
     return {
       type: REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS,
       value: status,
+    };
+  },
+  updateNameFilter: (nameFilter: string) => {
+    return {
+      type: REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER,
+      value: nameFilter,
     };
   },
 };

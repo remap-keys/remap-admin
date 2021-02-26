@@ -16,6 +16,7 @@ import {
   REVIEW_DEFINITION_DETAIL_ACTIONS,
   REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_STATUS,
   REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON,
+  REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER,
 } from '../actions/actions';
 import { WritableDraft } from 'immer/dist/types/types-external';
 
@@ -52,6 +53,9 @@ const reviewDefinitionListReducer = (
       break;
     case REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS:
       draft.review.definitionlist.keyboardDefinitionStatus = action.value;
+      break;
+    case REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER:
+      draft.review.definitionlist.nameFilter = action.value;
       break;
   }
 };

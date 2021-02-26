@@ -31,6 +31,10 @@
     flex-direction: row;
     justify-content: flex-end;
     margin-top: 16px;
+
+    &-item:not(:first-child) {
+      margin-left: 16px;
+    }
   }
 }
 

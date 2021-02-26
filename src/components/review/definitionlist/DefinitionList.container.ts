@@ -12,6 +12,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     keyboardDefinitionList: state.entities.keyboardDefinitionList,
     status: state.review.definitionlist.keyboardDefinitionStatus,
+    nameFilter: state.review.definitionlist.nameFilter,
   };
 };
 export type KeyboardListStateType = ReturnType<typeof mapStateToProps>;
@@ -24,6 +25,9 @@ const mapDispatchToProps = (_dispatch: any) => {
       );
       _dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.processing));
       _dispatch(ReviewActionsThunk.updateKeyboardDefinitionList());
+    },
+    updateNameFilter: (nameFilter: string) => {
+      _dispatch(ReviewDefinitionListActions.updateNameFilter(nameFilter));
     },
   };
 };

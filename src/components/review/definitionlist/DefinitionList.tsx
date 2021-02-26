@@ -13,6 +13,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from '@material-ui/core';
 import {
   IKeyboardDefinition,
@@ -42,34 +43,47 @@ export default class DefinitionList extends React.Component<
   };
 
   render() {
+    const filteredKeyboardList = this.props.keyboardDefinitionList!.filter(
+      (x) => x.name.toLowerCase().indexOf(this.props.nameFilter!) !== -1
+    );
     return (
       <div className="definition-list-wrapper">
         <div className="definition-list-container">
           <div className="definition-list-buttons">
-            <FormControl>
-              <InputLabel id="definition-list-status-select-label">
-                Status
-              </InputLabel>
-              <Select
-                labelId="definition-list-status-select-label"
-                id="definition-list-status-select"
-                value={this.props.status}
-                onChange={this.handleChangeStatus}
-              >
-                <MenuItem value="draft">draft</MenuItem>
-                <MenuItem value="in_review">in_review</MenuItem>
-                <MenuItem value="rejected">rejected</MenuItem>
-                <MenuItem value="approved">approved</MenuItem>
-              </Select>
-            </FormControl>
+            <div className="definition-list-buttons-item">
+              <TextField
+                id="definition-list-name-filter"
+                label="Name Filter"
+                value={this.props.nameFilter}
+                onChange={(e) => this.props.updateNameFilter!(e.target.value)}
+              />
+            </div>
+            <div className="definition-list-buttons-item">
+              <FormControl>
+                <InputLabel id="definition-list-status-select-label">
+                  Status
+                </InputLabel>
+                <Select
+                  labelId="definition-list-status-select-label"
+                  id="definition-list-status-select"
+                  value={this.props.status}
+                  onChange={this.handleChangeStatus}
+                >
+                  <MenuItem value="draft">draft</MenuItem>
+                  <MenuItem value="in_review">in_review</MenuItem>
+                  <MenuItem value="rejected">rejected</MenuItem>
+                  <MenuItem value="approved">approved</MenuItem>
+                </Select>
+              </FormControl>
+            </div>
           </div>
           <div className="definition-list">
-            {this.props.keyboardDefinitionList!.map((doc, index) => (
+            {filteredKeyboardList.map((doc, index) => (
               <div key={index} className="definition">
                 <KeyboardRow doc={doc} />
               </div>
             ))}
-            {this.props.keyboardDefinitionList!.length == 0 && (
+            {filteredKeyboardList.length == 0 && (
               <div className="definition">
                 <div className="no-registered-keyboard">
                   {`
