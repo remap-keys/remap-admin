@@ -40,6 +40,7 @@ export type RootState = {
     };
     definitionlist: {
       keyboardDefinitionStatus: IKeyboardDefinitionStatus;
+      nameFilter: string;
     };
     definitiondetail: {
       keyboardDefinitionStatus: IKeyboardDefinitionStatus;
@@ -71,6 +72,7 @@ export const INIT_STATE: RootState = {
     },
     definitionlist: {
       keyboardDefinitionStatus: KeyboardDefinitionStatus.approved,
+      nameFilter: '',
     },
     definitiondetail: {
       keyboardDefinitionStatus: KeyboardDefinitionStatus.draft,
