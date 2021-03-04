@@ -72,6 +72,8 @@ export class FirebaseProvider implements IAuth, IStorage {
                 status: definition.status,
                 json: definition.json,
                 rejectReason: definition.rejectReason,
+                githubDisplayName: definition.githubDisplayName,
+                githubUrl: definition.githubUrl,
                 createdAt: new Date(definition.createdAt),
                 updatedAt: new Date(definition.updatedAt),
               };
