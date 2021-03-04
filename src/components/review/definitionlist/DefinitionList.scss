@@ -24,13 +24,30 @@
   width: 100%;
   padding-top: 16px;
 
-  &-buttons {
+  &-header {
     width: 100%;
     max-width: 960px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
     margin-top: 16px;
+
+    &-message {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      &-value {
+        margin-left: 8px;
+        margin-right: 8px;
+      }
+    }
+  }
+
+  &-buttons {
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 
     &-item:not(:first-child) {
       margin-left: 16px;

@@ -3,6 +3,7 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import {
   IKeyboardDefinition,
   IKeyboardDefinitionDetail,
+  IKeyboardDefinitionStats,
   IKeyboardDefinitionStatus,
 } from '../services/storage/Storage';
 
@@ -73,6 +74,7 @@ export const REVIEW_DEFINITION_LIST_ACTIONS = '@ReviewDefinitionList';
 export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_LIST = `${REVIEW_DEFINITION_LIST_ACTIONS}/UpdateKeyboardDefinitionList`;
 export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATUS = `${REVIEW_DEFINITION_LIST_ACTIONS}/UpdateKeyboardDefinitionStatus`;
 export const REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER = `${REVIEW_DEFINITION_LIST_ACTIONS}/NameFilter`;
+export const REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATS = `${REVIEW_DEFINITION_LIST_ACTIONS}/KeyboardDefinitionStats`;
 export const ReviewDefinitionListActions = {
   updateKeyboardDefinitionList: (
     keyboardDefinitionList: IKeyboardDefinition[]
@@ -92,6 +94,12 @@ export const ReviewDefinitionListActions = {
     return {
       type: REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER,
       value: nameFilter,
+    };
+  },
+  updateKeyboardDefinitionStats: (stats: IKeyboardDefinitionStats) => {
+    return {
+      type: REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATS,
+      value: stats,
     };
   },
 };
@@ -224,5 +232,21 @@ export const ReviewActionsThunk = {
       await ReviewActionsThunk.updateKeyboardDefinitionDetail(definitionId)
     );
     dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.detail));
+  },
+
+  updateKeyboardDefinitionStats: (): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    getState: () => RootState
+  ) => {
+    const { storage } = getState();
+    const result = await storage.instance.fetchKeyboardDefinitionStats();
+    if (!result.success) {
+      console.error(result.cause!);
+      dispatch(NotificationActions.addError(result.error!, result.cause));
+      return;
+    }
+    dispatch(
+      ReviewDefinitionListActions.updateKeyboardDefinitionStats(result.stats!)
+    );
   },
 };

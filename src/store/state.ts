@@ -4,6 +4,7 @@ import { IAuth } from '../services/auth/Auth';
 import {
   IKeyboardDefinition,
   IKeyboardDefinitionDetail,
+  IKeyboardDefinitionStats,
   IKeyboardDefinitionStatus,
   IStorage,
   KeyboardDefinitionStatus,
@@ -41,6 +42,7 @@ export type RootState = {
     definitionlist: {
       keyboardDefinitionStatus: IKeyboardDefinitionStatus;
       nameFilter: string;
+      keyboardDefinitionStats: IKeyboardDefinitionStats;
     };
     definitiondetail: {
       keyboardDefinitionStatus: IKeyboardDefinitionStatus;
@@ -73,6 +75,13 @@ export const INIT_STATE: RootState = {
     definitionlist: {
       keyboardDefinitionStatus: KeyboardDefinitionStatus.in_review,
       nameFilter: '',
+      keyboardDefinitionStats: {
+        totalCount: 0,
+        draftCount: 0,
+        inReviewCount: 0,
+        rejectedCount: 0,
+        approvedCount: 0,
+      },
     },
     definitiondetail: {
       keyboardDefinitionStatus: KeyboardDefinitionStatus.draft,

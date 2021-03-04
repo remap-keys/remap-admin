@@ -13,6 +13,7 @@ const mapStateToProps = (state: RootState) => {
     keyboardDefinitionList: state.entities.keyboardDefinitionList,
     status: state.review.definitionlist.keyboardDefinitionStatus,
     nameFilter: state.review.definitionlist.nameFilter,
+    stats: state.review.definitionlist.keyboardDefinitionStats,
   };
 };
 export type KeyboardListStateType = ReturnType<typeof mapStateToProps>;
