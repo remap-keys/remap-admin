@@ -71,7 +71,7 @@ export const INIT_STATE: RootState = {
       reviewPhase: ReviewPhase.init,
     },
     definitionlist: {
-      keyboardDefinitionStatus: KeyboardDefinitionStatus.approved,
+      keyboardDefinitionStatus: KeyboardDefinitionStatus.in_review,
       nameFilter: '',
     },
     definitiondetail: {
