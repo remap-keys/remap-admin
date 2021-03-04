@@ -189,6 +189,19 @@ class KeyboardRow extends React.Component<KeyboardProps, any> {
               </div>
               <div className="definition-meta">
                 <div className="definition-meta-info">
+                  <span className="definition-meta-info-label">Applicant:</span>
+                  <a
+                    href={this.props.doc.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {this.props.doc.githubDisplayName ||
+                      this.props.doc.githubUrl.substring(
+                        this.props.doc.githubUrl.lastIndexOf('/') + 1
+                      )}
+                  </a>
+                </div>
+                <div className="definition-meta-info">
                   <span className="definition-meta-info-label">
                     Created at:
                   </span>
