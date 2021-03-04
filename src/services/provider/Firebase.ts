@@ -3,6 +3,7 @@ import { IAuth } from '../auth/Auth';
 import {
   IFetchKeyboardDefinitionDetailResult,
   IFetchKeyboardDefinitionListResult,
+  IFetchKeyboardDefinitionStatsResult,
   IKeyboardDefinitionStatus,
   IResult,
   IStorage,
@@ -183,6 +184,39 @@ export class FirebaseProvider implements IAuth, IStorage {
       return {
         success: false,
         error: 'Updating a keyboard definition status failed.',
+        cause: error,
+      };
+    }
+  }
+
+  async fetchKeyboardDefinitionStats(): Promise<IFetchKeyboardDefinitionStatsResult> {
+    try {
+      const command = this.functions.httpsCallable(
+        'fetchKeyboardDefinitionStats'
+      );
+      const httpsCallableResult = await command();
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+          stats: {
+            totalCount: result.totalCount!,
+            draftCount: result.draftCount!,
+            inReviewCount: result.inReviewCount!,
+            rejectedCount: result.rejectedCount!,
+            approvedCount: result.approvedCount!,
+          },
+        };
+      } else {
+        return {
+          success: false,
+          error: `Fetching a keyboard definition stats failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Fetching a keyboard definition stats failed.',
         cause: error,
       };
     }

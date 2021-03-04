@@ -23,6 +23,7 @@ const mapDispatchToProps = (_dispatch: any) => {
     },
     updateKeyboardDefinitionList: () => {
       _dispatch(ReviewAppActions.updateReviewPhase(ReviewPhase.processing));
+      _dispatch(ReviewActionsThunk.updateKeyboardDefinitionStats());
       _dispatch(ReviewActionsThunk.updateKeyboardDefinitionList());
     },
     updateKeyboardDefinitionDetail: (definitionId: string) => {

@@ -61,6 +61,18 @@ export interface IFetchKeyboardDefinitionDetailResult extends IResult {
   keyboardDefinitionDetail?: IKeyboardDefinitionDetail;
 }
 
+export type IKeyboardDefinitionStats = {
+  totalCount: number;
+  draftCount: number;
+  inReviewCount: number;
+  rejectedCount: number;
+  approvedCount: number;
+};
+
+export interface IFetchKeyboardDefinitionStatsResult extends IResult {
+  stats?: IKeyboardDefinitionStats;
+}
+
 /* eslint-disable no-unused-vars */
 export interface IStorage {
   fetchAdminUsers(): Promise<string[]>;
@@ -75,5 +87,6 @@ export interface IStorage {
     status: IKeyboardDefinitionStatus,
     rejectReason: string
   ): Promise<IResult>;
+  fetchKeyboardDefinitionStats(): Promise<IFetchKeyboardDefinitionStatsResult>;
 }
 /* eslint-enable no-unused-vars */

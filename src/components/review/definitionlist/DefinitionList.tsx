@@ -49,32 +49,60 @@ export default class DefinitionList extends React.Component<
     return (
       <div className="definition-list-wrapper">
         <div className="definition-list-container">
-          <div className="definition-list-buttons">
-            <div className="definition-list-buttons-item">
-              <TextField
-                id="definition-list-name-filter"
-                label="Name Filter"
-                value={this.props.nameFilter}
-                onChange={(e) => this.props.updateNameFilter!(e.target.value)}
+          <div className="definition-list-header">
+            <div className="definition-list-header-message">
+              <KeyboardDefinitionStatusChip
+                status={KeyboardDefinitionStatus.draft}
               />
+              <div className="definition-list-header-message-value">
+                {this.props.stats!.draftCount}
+              </div>
+              <KeyboardDefinitionStatusChip
+                status={KeyboardDefinitionStatus.in_review}
+              />
+              <div className="definition-list-header-message-value">
+                {this.props.stats!.inReviewCount}
+              </div>
+              <KeyboardDefinitionStatusChip
+                status={KeyboardDefinitionStatus.rejected}
+              />
+              <div className="definition-list-header-message-value">
+                {this.props.stats!.rejectedCount}
+              </div>
+              <KeyboardDefinitionStatusChip
+                status={KeyboardDefinitionStatus.approved}
+              />
+              <div className="definition-list-header-message-value">
+                {this.props.stats!.approvedCount}
+              </div>
             </div>
-            <div className="definition-list-buttons-item">
-              <FormControl>
-                <InputLabel id="definition-list-status-select-label">
-                  Status
-                </InputLabel>
-                <Select
-                  labelId="definition-list-status-select-label"
-                  id="definition-list-status-select"
-                  value={this.props.status}
-                  onChange={this.handleChangeStatus}
-                >
-                  <MenuItem value="draft">draft</MenuItem>
-                  <MenuItem value="in_review">in_review</MenuItem>
-                  <MenuItem value="rejected">rejected</MenuItem>
-                  <MenuItem value="approved">approved</MenuItem>
-                </Select>
-              </FormControl>
+            <div className="definition-list-buttons">
+              <div className="definition-list-buttons-item">
+                <TextField
+                  id="definition-list-name-filter"
+                  label="Name Filter"
+                  value={this.props.nameFilter}
+                  onChange={(e) => this.props.updateNameFilter!(e.target.value)}
+                />
+              </div>
+              <div className="definition-list-buttons-item">
+                <FormControl>
+                  <InputLabel id="definition-list-status-select-label">
+                    Status
+                  </InputLabel>
+                  <Select
+                    labelId="definition-list-status-select-label"
+                    id="definition-list-status-select"
+                    value={this.props.status}
+                    onChange={this.handleChangeStatus}
+                  >
+                    <MenuItem value="draft">draft</MenuItem>
+                    <MenuItem value="in_review">in_review</MenuItem>
+                    <MenuItem value="rejected">rejected</MenuItem>
+                    <MenuItem value="approved">approved</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
             </div>
           </div>
           <div className="definition-list">
@@ -103,36 +131,35 @@ type KeyboardProps = {
   doc: IKeyboardDefinition;
 };
 
+type IKeyboardDefinitionStatusChipProps = {
+  status: IKeyboardDefinitionStatus;
+};
+
+const KeyboardDefinitionStatusChip = (
+  props: IKeyboardDefinitionStatusChipProps
+) => {
+  switch (props.status) {
+    case KeyboardDefinitionStatus.draft:
+      return <Chip label={props.status} size="small" />;
+    case KeyboardDefinitionStatus.in_review:
+      return (
+        <Chip
+          label={props.status}
+          size="small"
+          className="status-badge-in-review"
+        />
+      );
+    case KeyboardDefinitionStatus.rejected:
+      return <Chip label={props.status} size="small" color="secondary" />;
+    case KeyboardDefinitionStatus.approved:
+      return <Chip label={props.status} size="small" color="primary" />;
+    default:
+      throw new Error(`Unknown Status: ${status}`);
+  }
+};
+
 class KeyboardRow extends React.Component<KeyboardProps, any> {
   render() {
-    const renderStatusBadge = (status: IKeyboardDefinitionStatus) => {
-      switch (status) {
-        case KeyboardDefinitionStatus.draft:
-          return <Chip label={this.props.doc.status} size="small" />;
-        case KeyboardDefinitionStatus.in_review:
-          return (
-            <Chip
-              label={this.props.doc.status}
-              size="small"
-              className="status-badge-in-review"
-            />
-          );
-        case KeyboardDefinitionStatus.rejected:
-          return (
-            <Chip
-              label={this.props.doc.status}
-              size="small"
-              color="secondary"
-            />
-          );
-        case KeyboardDefinitionStatus.approved:
-          return (
-            <Chip label={this.props.doc.status} size="small" color="primary" />
-          );
-        default:
-          throw new Error(`Unknown Status: ${status}`);
-      }
-    };
     return (
       <Card>
         <CardContent>
@@ -140,7 +167,7 @@ class KeyboardRow extends React.Component<KeyboardProps, any> {
             <div className="definition-container-left">
               <div className="definition-header">
                 <h2 className="definition-name">{this.props.doc.name}</h2>
-                {renderStatusBadge(this.props.doc.status)}
+                <KeyboardDefinitionStatusChip status={this.props.doc.status} />
               </div>
               <div className="definition-meta">
                 <div className="definition-meta-info">
