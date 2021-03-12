@@ -32,6 +32,7 @@ import {
 } from '../../../services/storage/Storage';
 import { MoreVert } from '@material-ui/icons';
 import { hexadecimal } from '../../../utils/StringUtils';
+import { RejectMessages } from './RejectMessages';
 
 type ConfirmDialogMode = 'update-review-status';
 
@@ -39,6 +40,7 @@ type DefinitionDetailState = {
   openConfirmDialog: boolean;
   confirmDialogMode: ConfirmDialogMode | null;
   menuAnchorEl: any;
+  rejectMessage: number;
 };
 type OwnProps = {};
 type DefinitionDetailProps = OwnProps &
@@ -61,6 +63,7 @@ export default class DefinitionDetail extends React.Component<
       openConfirmDialog: false,
       confirmDialogMode: null,
       menuAnchorEl: null,
+      rejectMessage: -1,
     };
   }
 
@@ -117,6 +120,15 @@ export default class DefinitionDetail extends React.Component<
     a.href = jsonUrl;
     a.click();
     a.remove();
+  };
+
+  handleRejectMessagesChange = (
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => {
+    const value = event.target.value as number;
+    this.setState({ rejectMessage: value });
+    const rejectReason = value !== -1 ? RejectMessages[value].long : '';
+    this.props.updateRejectReason!(rejectReason);
   };
 
   isStatus(status: IKeyboardDefinitionStatus): boolean {
@@ -285,6 +297,42 @@ export default class DefinitionDetail extends React.Component<
             />
           </div>
         </React.Fragment>
+      );
+    } else {
+      return null;
+    }
+  }
+
+  renderRejectMessage() {
+    if (this.props.keyboardDefinitionStatus === 'rejected') {
+      return (
+        <div className="definition-detail-form-row">
+          <FormControl>
+            <InputLabel id="definition-detail-reject-message-select-label">
+              Reject Reason Template
+            </InputLabel>
+            <Select
+              labelId="definition-detail-reject-message-select-label"
+              id="definition-detail-reject-message-select"
+              value={this.state.rejectMessage}
+              onChange={this.handleRejectMessagesChange}
+            >
+              {RejectMessages.map((message, index) => {
+                return (
+                  <MenuItem key={`reject-message-${index}`} value={index}>
+                    {message.short}
+                  </MenuItem>
+                );
+              })}
+              <MenuItem
+                key={`reject-message-${RejectMessages.length}`}
+                value={-1}
+              >
+                Other
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </div>
       );
     } else {
       return null;
@@ -486,6 +534,7 @@ export default class DefinitionDetail extends React.Component<
                         </Select>
                       </FormControl>
                     </div>
+                    {this.renderRejectMessage()}
                     <div className="definition-detail-form-row">
                       <TextField
                         id="definition-detail-reject-reason"
