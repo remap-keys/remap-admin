@@ -44,6 +44,7 @@ export interface IKeyboardDefinition {
   readonly otherPlaceHowToGet: string;
   readonly otherPlaceSourceCodeEvidence: string;
   readonly otherPlacePublisherEvidence: string;
+  readonly contactInformation: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }
