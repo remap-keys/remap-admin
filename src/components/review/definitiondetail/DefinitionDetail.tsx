@@ -27,6 +27,7 @@ import {
 } from '@material-ui/core';
 import {
   FirmwareCodePlace,
+  IKeyboardDefinitionDetail,
   IKeyboardDefinitionStatus,
   KeyboardDefinitionStatus,
 } from '../../../services/storage/Storage';
@@ -135,210 +136,6 @@ export default class DefinitionDetail extends React.Component<
     return this.props.keyboardDefinitionDetail!.status === status;
   }
 
-  renderMenu() {
-    const menuItems = [];
-    if (this.props.keyboardDefinitionDetail) {
-      menuItems.push(
-        <MenuItem
-          key="1"
-          onClick={this.handleDownloadJsonMenuClick}
-          button={true}
-        >
-          Download JSON
-        </MenuItem>
-      );
-    }
-    if (menuItems.length > 0) {
-      const { menuAnchorEl } = this.state;
-      return (
-        <React.Fragment>
-          <IconButton
-            aria-owns={menuAnchorEl ? 'definition-detail-menu' : undefined}
-            onClick={this.handleMenuIconClick}
-          >
-            <MoreVert />
-          </IconButton>
-          <Menu
-            id="definition-detail-menu"
-            anchorEl={menuAnchorEl}
-            open={Boolean(menuAnchorEl)}
-            onClose={this.handleMenuClose}
-          >
-            {menuItems}
-          </Menu>
-        </React.Fragment>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderEvidenceForQmkRepository() {
-    if (
-      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
-      FirmwareCodePlace.qmk
-    ) {
-      return (
-        <div className="definition-detail-form-row">
-          <TextField
-            id="definition-detail-qmk-repository-pull-request-url"
-            label="1st Pull Request URL"
-            variant="outlined"
-            value={
-              this.props.keyboardDefinitionDetail!
-                .qmkRepositoryFirstPullRequestUrl || ''
-            }
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderEvidenceForForkedRepository() {
-    if (
-      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
-      FirmwareCodePlace.forked
-    ) {
-      return (
-        <React.Fragment>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-forked-repository-url"
-              label="Forked Repository URL"
-              variant="outlined"
-              value={
-                this.props.keyboardDefinitionDetail!.forkedRepositoryUrl || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-forked-repository-evidence"
-              label="Evidence Information"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!.forkedRepositoryEvidence ||
-                ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderEvidenceForOtherPlace() {
-    if (
-      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
-      FirmwareCodePlace.other
-    ) {
-      return (
-        <React.Fragment>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-other-place-how-to-get"
-              label="How to Get the Source Code"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!.otherPlaceHowToGet || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-other-place-source-code-evidence"
-              label="Evidence Information for Source Code"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!
-                  .otherPlaceSourceCodeEvidence || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-other-place-publisher-evidence"
-              label="Evidence Information for Publisher"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!
-                  .otherPlacePublisherEvidence || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderRejectMessage() {
-    if (this.props.keyboardDefinitionStatus === 'rejected') {
-      return (
-        <div className="definition-detail-form-row">
-          <FormControl>
-            <InputLabel id="definition-detail-reject-message-select-label">
-              Reject Reason Template
-            </InputLabel>
-            <Select
-              labelId="definition-detail-reject-message-select-label"
-              id="definition-detail-reject-message-select"
-              value={this.state.rejectMessage}
-              onChange={this.handleRejectMessagesChange}
-            >
-              {RejectMessages.map((message, index) => {
-                return (
-                  <MenuItem key={`reject-message-${index}`} value={index}>
-                    {message.short}
-                  </MenuItem>
-                );
-              })}
-              <MenuItem
-                key={`reject-message-${RejectMessages.length}`}
-                value={-1}
-              >
-                Other
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
-
   render() {
     let activeStep;
     switch (this.props.keyboardDefinitionDetail!.status) {
@@ -382,7 +179,17 @@ export default class DefinitionDetail extends React.Component<
                   >
                     &lt; Keyboard List
                   </Button>
-                  {this.renderMenu()}
+                  <MenuUI
+                    keyboardDefinitionDetail={
+                      this.props.keyboardDefinitionDetail
+                    }
+                    handleMenuIconClick={this.handleMenuIconClick}
+                    menuAnchorEl={this.state.menuAnchorEl}
+                    handleMenuClose={this.handleMenuClose}
+                    handleDownloadJsonMenuClick={
+                      this.handleDownloadJsonMenuClick
+                    }
+                  />
                 </div>
                 <Stepper activeStep={activeStep}>
                   {statusSteps.map((label) => {
@@ -509,9 +316,21 @@ export default class DefinitionDetail extends React.Component<
                         }}
                       />
                     </div>
-                    {this.renderEvidenceForQmkRepository()}
-                    {this.renderEvidenceForForkedRepository()}
-                    {this.renderEvidenceForOtherPlace()}
+                    <EvidenceForQmkRepositoryRow
+                      keyboardDefinitionDetail={
+                        this.props.keyboardDefinitionDetail!
+                      }
+                    />
+                    <EvidenceForForkedRepositoryRow
+                      keyboardDefinitionDetail={
+                        this.props.keyboardDefinitionDetail!
+                      }
+                    />
+                    <EvidenceForOtherPlaceRow
+                      keyboardDefinitionDetail={
+                        this.props.keyboardDefinitionDetail!
+                      }
+                    />
                     <div className="definition-detail-form-row">
                       <FormControl>
                         <InputLabel id="definition-detail-status-select-label">
@@ -534,7 +353,15 @@ export default class DefinitionDetail extends React.Component<
                         </Select>
                       </FormControl>
                     </div>
-                    {this.renderRejectMessage()}
+                    <RejectMessageRow
+                      keyboardDefinitionStatus={
+                        this.props.keyboardDefinitionStatus
+                      }
+                      rejectMessage={this.state.rejectMessage}
+                      handleRejectMessagesChange={
+                        this.handleRejectMessagesChange
+                      }
+                    />
                     <div className="definition-detail-form-row">
                       <TextField
                         id="definition-detail-reject-reason"
@@ -600,5 +427,231 @@ export default class DefinitionDetail extends React.Component<
         </Dialog>
       </React.Fragment>
     );
+  }
+}
+
+type RejectMessageRowProps = {
+  keyboardDefinitionStatus?: IKeyboardDefinitionStatus;
+  rejectMessage: number;
+  handleRejectMessagesChange: (
+    // eslint-disable-next-line no-unused-vars
+    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  ) => void;
+};
+
+function RejectMessageRow(props: RejectMessageRowProps) {
+  if (props.keyboardDefinitionStatus === 'rejected') {
+    return (
+      <div className="definition-detail-form-row">
+        <FormControl>
+          <InputLabel id="definition-detail-reject-message-select-label">
+            Reject Reason Template
+          </InputLabel>
+          <Select
+            labelId="definition-detail-reject-message-select-label"
+            id="definition-detail-reject-message-select"
+            value={props.rejectMessage}
+            onChange={props.handleRejectMessagesChange}
+          >
+            {RejectMessages.map((message, index) => {
+              return (
+                <MenuItem key={`reject-message-${index}`} value={index}>
+                  {message.short}
+                </MenuItem>
+              );
+            })}
+            <MenuItem
+              key={`reject-message-${RejectMessages.length}`}
+              value={-1}
+            >
+              Other
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForOtherPlaceRowProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForOtherPlaceRow(props: EvidenceForOtherPlaceRowProps) {
+  if (
+    props.keyboardDefinitionDetail.firmwareCodePlace === FirmwareCodePlace.other
+  ) {
+    return (
+      <React.Fragment>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-other-place-how-to-get"
+            label="How to Get the Source Code"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={props.keyboardDefinitionDetail.otherPlaceHowToGet || ''}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-other-place-source-code-evidence"
+            label="Evidence Information for Source Code"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={
+              props.keyboardDefinitionDetail.otherPlaceSourceCodeEvidence || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-other-place-publisher-evidence"
+            label="Evidence Information for Publisher"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={
+              props.keyboardDefinitionDetail.otherPlacePublisherEvidence || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForForkedRepositoryRowProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForForkedRepositoryRow(
+  props: EvidenceForForkedRepositoryRowProps
+) {
+  if (
+    props.keyboardDefinitionDetail.firmwareCodePlace ===
+    FirmwareCodePlace.forked
+  ) {
+    return (
+      <React.Fragment>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-forked-repository-url"
+            label="Forked Repository URL"
+            variant="outlined"
+            value={props.keyboardDefinitionDetail.forkedRepositoryUrl || ''}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-forked-repository-evidence"
+            label="Evidence Information"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={
+              props.keyboardDefinitionDetail.forkedRepositoryEvidence || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForQmkRepositoryRowProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForQmkRepositoryRow(props: EvidenceForQmkRepositoryRowProps) {
+  if (
+    props.keyboardDefinitionDetail.firmwareCodePlace === FirmwareCodePlace.qmk
+  ) {
+    return (
+      <div className="definition-detail-form-row">
+        <TextField
+          id="definition-detail-qmk-repository-pull-request-url"
+          label="1st Pull Request URL"
+          variant="outlined"
+          value={
+            props.keyboardDefinitionDetail.qmkRepositoryFirstPullRequestUrl ||
+            ''
+          }
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </div>
+    );
+  } else {
+    return null;
+  }
+}
+
+type MenuUIProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail | null | undefined;
+  // eslint-disable-next-line no-unused-vars
+  handleMenuIconClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  menuAnchorEl: any;
+  handleMenuClose: () => void;
+  handleDownloadJsonMenuClick: () => void;
+};
+
+function MenuUI(props: MenuUIProps) {
+  const menuItems = [];
+  if (props.keyboardDefinitionDetail) {
+    menuItems.push(
+      <MenuItem
+        key="1"
+        onClick={props.handleDownloadJsonMenuClick}
+        button={true}
+      >
+        Download JSON
+      </MenuItem>
+    );
+  }
+  if (menuItems.length > 0) {
+    return (
+      <React.Fragment>
+        <IconButton
+          aria-owns={props.menuAnchorEl ? 'definition-detail-menu' : undefined}
+          onClick={props.handleMenuIconClick}
+        >
+          <MoreVert />
+        </IconButton>
+        <Menu
+          id="definition-detail-menu"
+          anchorEl={props.menuAnchorEl}
+          open={Boolean(props.menuAnchorEl)}
+          onClose={props.handleMenuClose}
+        >
+          {menuItems}
+        </Menu>
+      </React.Fragment>
+    );
+  } else {
+    return null;
   }
 }
