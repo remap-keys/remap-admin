@@ -143,6 +143,8 @@ export class FirebaseProvider implements IAuth, IStorage {
               result.keyboardDefinitionDetail.otherPlaceSourceCodeEvidence,
             otherPlacePublisherEvidence:
               result.keyboardDefinitionDetail.otherPlacePublisherEvidence,
+            contactInformation:
+              result.keyboardDefinitionDetail.contactInformation,
           },
         };
       } else {

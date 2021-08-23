@@ -309,6 +309,21 @@ export default class DefinitionDetail extends React.Component<
                           }}
                         />
                       </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-contact-information"
+                          label="Contact Information"
+                          variant="outlined"
+                          multiline
+                          value={
+                            this.props.keyboardDefinitionDetail!
+                              .contactInformation
+                          }
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
                     </div>
                     <div className="definition-detail-form">
                       <div className="definition-detail-form-row">
