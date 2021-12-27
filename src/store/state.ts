@@ -6,6 +6,7 @@ import {
   IKeyboardDefinitionDetail,
   IKeyboardDefinitionStats,
   IKeyboardDefinitionStatus,
+  IOrganization,
   IStorage,
   KeyboardDefinitionStatus,
 } from '../services/storage/Storage';
@@ -24,6 +25,7 @@ export type RootState = {
   entities: {
     keyboardDefinitionList: IKeyboardDefinition[];
     keyboardDefinitionDetail: IKeyboardDefinitionDetail | null;
+    organization: IOrganization | null;
   };
   app: {
     buildNumber: number;
@@ -57,6 +59,7 @@ export const INIT_STATE: RootState = {
   entities: {
     keyboardDefinitionList: [],
     keyboardDefinitionDetail: null,
+    organization: null,
   },
   app: {
     buildNumber: buildInfo.buildNumber,

@@ -27,6 +27,7 @@ import {
 } from '@material-ui/core';
 import {
   FirmwareCodePlace,
+  IKeyboardDefinitionDetail,
   IKeyboardDefinitionStatus,
   KeyboardDefinitionStatus,
 } from '../../../services/storage/Storage';
@@ -173,136 +174,6 @@ export default class DefinitionDetail extends React.Component<
     }
   }
 
-  renderEvidenceForQmkRepository() {
-    if (
-      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
-      FirmwareCodePlace.qmk
-    ) {
-      return (
-        <div className="definition-detail-form-row">
-          <TextField
-            id="definition-detail-qmk-repository-pull-request-url"
-            label="1st Pull Request URL"
-            variant="outlined"
-            value={
-              this.props.keyboardDefinitionDetail!
-                .qmkRepositoryFirstPullRequestUrl || ''
-            }
-            InputProps={{
-              readOnly: true,
-            }}
-          />
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderEvidenceForForkedRepository() {
-    if (
-      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
-      FirmwareCodePlace.forked
-    ) {
-      return (
-        <React.Fragment>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-forked-repository-url"
-              label="Forked Repository URL"
-              variant="outlined"
-              value={
-                this.props.keyboardDefinitionDetail!.forkedRepositoryUrl || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-forked-repository-evidence"
-              label="Evidence Information"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!.forkedRepositoryEvidence ||
-                ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return null;
-    }
-  }
-
-  renderEvidenceForOtherPlace() {
-    if (
-      this.props.keyboardDefinitionDetail!.firmwareCodePlace ===
-      FirmwareCodePlace.other
-    ) {
-      return (
-        <React.Fragment>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-other-place-how-to-get"
-              label="How to Get the Source Code"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!.otherPlaceHowToGet || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-other-place-source-code-evidence"
-              label="Evidence Information for Source Code"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!
-                  .otherPlaceSourceCodeEvidence || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-          <div className="definition-detail-form-row">
-            <TextField
-              id="definition-detail-other-place-publisher-evidence"
-              label="Evidence Information for Publisher"
-              variant="outlined"
-              multiline
-              rows={4}
-              value={
-                this.props.keyboardDefinitionDetail!
-                  .otherPlacePublisherEvidence || ''
-              }
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return null;
-    }
-  }
-
   renderRejectMessage() {
     if (this.props.keyboardDefinitionStatus === 'rejected') {
       return (
@@ -372,195 +243,249 @@ export default class DefinitionDetail extends React.Component<
     return (
       <React.Fragment>
         <div className="definition-detail-wrapper">
-          <div className="definition-detail-card">
-            <Card>
-              <CardContent>
-                <div className="edit-keyboard-header">
-                  <Button
-                    style={{ marginRight: '16px' }}
-                    onClick={this.handleBackButtonClick}
-                  >
-                    &lt; Keyboard List
-                  </Button>
-                  {this.renderMenu()}
-                </div>
-                <Stepper activeStep={activeStep}>
-                  {statusSteps.map((label) => {
-                    const stepProps = {
-                      completed,
-                    };
-                    const labelProps = {};
-                    return (
-                      <Step key={label} {...stepProps}>
-                        <StepLabel {...labelProps}>{label}</StepLabel>
-                      </Step>
-                    );
-                  })}
-                </Stepper>
-                <div className="definition-detail-form-container">
-                  <div className="definition-detail-form">
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-name"
-                        label="Name"
-                        variant="outlined"
-                        value={this.props.keyboardDefinitionDetail!.name}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-vendor_id"
-                        label="Vendor ID"
-                        variant="outlined"
-                        value={hexadecimal(
-                          this.props.keyboardDefinitionDetail!.vendorId,
-                          4
-                        )}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-product_id"
-                        label="Product ID"
-                        variant="outlined"
-                        value={hexadecimal(
-                          this.props.keyboardDefinitionDetail!.productId,
-                          4
-                        )}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-product-name"
-                        label="Product Name"
-                        helperText="This is a Product Name specified by `#define PRODUCT [Product Name]` in the config.h file."
-                        variant="outlined"
-                        value={this.props.keyboardDefinitionDetail!.productName}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-github-uid"
-                        label="GitHub User ID"
-                        variant="outlined"
-                        value={this.props.keyboardDefinitionDetail!.githubUid}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-github-display-name"
-                        label="GitHub Display Name"
-                        variant="outlined"
-                        value={
-                          this.props.keyboardDefinitionDetail!.githubDisplayName
-                        }
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-github-display-email"
-                        label="GitHub Email"
-                        variant="outlined"
-                        value={this.props.keyboardDefinitionDetail!.githubEmail}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-github-display-link"
-                        label="GitHub Account Page"
-                        variant="outlined"
-                        value={this.props.keyboardDefinitionDetail!.githubUrl}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
+          <div className="definition-detail-container">
+            <div className="definition-detail-card">
+              <Card>
+                <CardContent>
+                  <div className="edit-keyboard-header">
+                    <Button
+                      style={{ marginRight: '16px' }}
+                      onClick={this.handleBackButtonClick}
+                    >
+                      &lt; Keyboard List
+                    </Button>
+                    {this.renderMenu()}
                   </div>
-                  <div className="definition-detail-form">
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-firmware-code-place"
-                        label="Where is the source code of this keyboard's firmware?"
-                        variant="outlined"
-                        value={firmwareCodePlace}
-                        InputProps={{
-                          readOnly: true,
-                        }}
-                      />
-                    </div>
-                    {this.renderEvidenceForQmkRepository()}
-                    {this.renderEvidenceForForkedRepository()}
-                    {this.renderEvidenceForOtherPlace()}
-                    <div className="definition-detail-form-row">
-                      <FormControl>
-                        <InputLabel id="definition-detail-status-select-label">
-                          Status
-                        </InputLabel>
-                        <Select
-                          labelId="definition-detail-status-select-label"
-                          id="definition-detail-status-select"
-                          value={this.props.keyboardDefinitionStatus}
-                          onChange={(event) =>
-                            this.props.updateKeyboardDefinitionStatus!(
-                              event.target.value as IKeyboardDefinitionStatus
-                            )
+                  <Stepper activeStep={activeStep}>
+                    {statusSteps.map((label) => {
+                      const stepProps = {
+                        completed,
+                      };
+                      const labelProps = {};
+                      return (
+                        <Step key={label} {...stepProps}>
+                          <StepLabel {...labelProps}>{label}</StepLabel>
+                        </Step>
+                      );
+                    })}
+                  </Stepper>
+                  <div className="definition-detail-form-container">
+                    <div className="definition-detail-form">
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-name"
+                          label="Name"
+                          variant="outlined"
+                          value={this.props.keyboardDefinitionDetail!.name}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-vendor_id"
+                          label="Vendor ID"
+                          variant="outlined"
+                          value={hexadecimal(
+                            this.props.keyboardDefinitionDetail!.vendorId,
+                            4
+                          )}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-product_id"
+                          label="Product ID"
+                          variant="outlined"
+                          value={hexadecimal(
+                            this.props.keyboardDefinitionDetail!.productId,
+                            4
+                          )}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-product-name"
+                          label="Product Name"
+                          helperText="This is a Product Name specified by `#define PRODUCT [Product Name]` in the config.h file."
+                          variant="outlined"
+                          value={
+                            this.props.keyboardDefinitionDetail!.productName
                           }
-                        >
-                          <MenuItem value="draft">draft</MenuItem>
-                          <MenuItem value="in_review">in_review</MenuItem>
-                          <MenuItem value="rejected">rejected</MenuItem>
-                          <MenuItem value="approved">approved</MenuItem>
-                        </Select>
-                      </FormControl>
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-author-type"
+                          label="Author Type"
+                          variant="outlined"
+                          value={
+                            this.props.keyboardDefinitionDetail!.authorType ===
+                            'individual'
+                              ? 'Individual'
+                              : 'Organization'
+                          }
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      {this.props.keyboardDefinitionDetail!.authorType ===
+                      'organization' ? (
+                        <div className="definition-detail-form-row">
+                          <TextField
+                            id="definition-detail-organization"
+                            label="Organization"
+                            variant="outlined"
+                            value={this.props.organization!.name}
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                          />
+                        </div>
+                      ) : null}
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-github-uid"
+                          label="GitHub User ID"
+                          variant="outlined"
+                          value={this.props.keyboardDefinitionDetail!.githubUid}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-github-display-name"
+                          label="GitHub Display Name"
+                          variant="outlined"
+                          value={
+                            this.props.keyboardDefinitionDetail!
+                              .githubDisplayName
+                          }
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-github-display-email"
+                          label="GitHub Email"
+                          variant="outlined"
+                          value={
+                            this.props.keyboardDefinitionDetail!.githubEmail
+                          }
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-github-display-link"
+                          label="GitHub Account Page"
+                          variant="outlined"
+                          value={this.props.keyboardDefinitionDetail!.githubUrl}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
                     </div>
-                    {this.renderRejectMessage()}
-                    <div className="definition-detail-form-row">
-                      <TextField
-                        id="definition-detail-reject-reason"
-                        label="Reject Reason"
-                        placeholder="Please fill in the reason when this review request is rejected."
-                        multiline
-                        rowsMax={4}
-                        value={this.props.rejectReason}
-                        onChange={(e) =>
-                          this.props.updateRejectReason!(e.target.value)
+                    <div className="definition-detail-form">
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-firmware-code-place"
+                          label="Where is the source code of this keyboard's firmware?"
+                          variant="outlined"
+                          value={firmwareCodePlace}
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      <EvidenceForQmkRepository
+                        keyboardDefinitionDetail={
+                          this.props.keyboardDefinitionDetail!
                         }
-                        variant="outlined"
                       />
-                    </div>
-                    <div className="definition-detail-form-buttons">
-                      <Button
-                        variant="contained"
-                        onClick={this.handleUpdateReviewStatusClick}
-                      >
-                        Update Review Status
-                      </Button>
+                      <EvidenceForForkedRepository
+                        keyboardDefinitionDetail={
+                          this.props.keyboardDefinitionDetail!
+                        }
+                      />
+                      <EvidenceForOtherPlace
+                        keyboardDefinitionDetail={
+                          this.props.keyboardDefinitionDetail!
+                        }
+                      />
+                      <EvidenceForOrganization
+                        keyboardDefinitionDetail={
+                          this.props.keyboardDefinitionDetail!
+                        }
+                      />
+                      <div className="definition-detail-form-row">
+                        <FormControl>
+                          <InputLabel id="definition-detail-status-select-label">
+                            Status
+                          </InputLabel>
+                          <Select
+                            labelId="definition-detail-status-select-label"
+                            id="definition-detail-status-select"
+                            value={this.props.keyboardDefinitionStatus}
+                            onChange={(event) =>
+                              this.props.updateKeyboardDefinitionStatus!(
+                                event.target.value as IKeyboardDefinitionStatus
+                              )
+                            }
+                          >
+                            <MenuItem value="draft">draft</MenuItem>
+                            <MenuItem value="in_review">in_review</MenuItem>
+                            <MenuItem value="rejected">rejected</MenuItem>
+                            <MenuItem value="approved">approved</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                      {this.renderRejectMessage()}
+                      <div className="definition-detail-form-row">
+                        <TextField
+                          id="definition-detail-reject-reason"
+                          label="Reject Reason"
+                          placeholder="Please fill in the reason when this review request is rejected."
+                          multiline
+                          rowsMax={4}
+                          value={this.props.rejectReason}
+                          onChange={(e) =>
+                            this.props.updateRejectReason!(e.target.value)
+                          }
+                          variant="outlined"
+                        />
+                      </div>
+                      <div className="definition-detail-form-buttons">
+                        <Button
+                          variant="contained"
+                          onClick={this.handleUpdateReviewStatusClick}
+                        >
+                          Update Review Status
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
         <Dialog
@@ -600,5 +525,164 @@ export default class DefinitionDetail extends React.Component<
         </Dialog>
       </React.Fragment>
     );
+  }
+}
+
+type EvidenceForQmkRepositoryProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForQmkRepository(props: EvidenceForQmkRepositoryProps) {
+  if (
+    props.keyboardDefinitionDetail.firmwareCodePlace === FirmwareCodePlace.qmk
+  ) {
+    return (
+      <div className="definition-detail-form-row">
+        <TextField
+          id="definition-detail-qmk-repository-pull-request-url"
+          label="1st Pull Request URL"
+          variant="outlined"
+          value={
+            props.keyboardDefinitionDetail.qmkRepositoryFirstPullRequestUrl ||
+            ''
+          }
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </div>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForForkedRepositoryProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForForkedRepository(props: EvidenceForForkedRepositoryProps) {
+  if (
+    props.keyboardDefinitionDetail.firmwareCodePlace ===
+    FirmwareCodePlace.forked
+  ) {
+    return (
+      <React.Fragment>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-forked-repository-url"
+            label="Forked Repository URL"
+            variant="outlined"
+            value={props.keyboardDefinitionDetail.forkedRepositoryUrl || ''}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-forked-repository-evidence"
+            label="Evidence Information"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={
+              props.keyboardDefinitionDetail.forkedRepositoryEvidence || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForOtherPlaceProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForOtherPlace(props: EvidenceForOtherPlaceProps) {
+  if (
+    props.keyboardDefinitionDetail.firmwareCodePlace === FirmwareCodePlace.other
+  ) {
+    return (
+      <React.Fragment>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-other-place-how-to-get"
+            label="How to Get the Source Code"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={props.keyboardDefinitionDetail.otherPlaceHowToGet || ''}
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-other-place-source-code-evidence"
+            label="Evidence Information for Source Code"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={
+              props.keyboardDefinitionDetail.otherPlaceSourceCodeEvidence || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+        <div className="definition-detail-form-row">
+          <TextField
+            id="definition-detail-other-place-publisher-evidence"
+            label="Evidence Information for Publisher"
+            variant="outlined"
+            multiline
+            rows={4}
+            value={
+              props.keyboardDefinitionDetail.otherPlacePublisherEvidence || ''
+            }
+            InputProps={{
+              readOnly: true,
+            }}
+          />
+        </div>
+      </React.Fragment>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForOrganizationProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForOrganization(props: EvidenceForOrganizationProps) {
+  if (props.keyboardDefinitionDetail.authorType === 'organization') {
+    return (
+      <div className="definition-detail-form-row">
+        <TextField
+          id="definition-detail-organization-evidence"
+          label="Evidence for Organization"
+          variant="outlined"
+          multiline
+          rows={4}
+          value={props.keyboardDefinitionDetail.organizationEvidence || ''}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </div>
+    );
+  } else {
+    return null;
   }
 }

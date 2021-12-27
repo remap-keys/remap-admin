@@ -18,6 +18,7 @@ import {
   REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON,
   REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER,
   REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATS,
+  REVIEW_DEFINITION_DETAIL_UPDATE_ORGANIZATION,
 } from '../actions/actions';
 import { WritableDraft } from 'immer/dist/types/types-external';
 
@@ -77,6 +78,9 @@ const reviewDefinitionDetailReducer = (
       break;
     case REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON:
       draft.review.definitiondetail.rejectReason = action.value;
+      break;
+    case REVIEW_DEFINITION_DETAIL_UPDATE_ORGANIZATION:
+      draft.entities.organization = action.value;
       break;
   }
 };

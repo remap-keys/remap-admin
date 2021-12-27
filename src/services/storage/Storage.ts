@@ -27,7 +27,9 @@ export const FirmwareCodePlace: { [p: string]: IFirmwareCodePlace } = {
 
 export interface IKeyboardDefinition {
   readonly id: string;
+  readonly authorType: 'individual' | 'organization';
   readonly authorUid: string;
+  readonly organizationId: string | undefined;
   readonly name: string;
   readonly vendorId: number;
   readonly productId: number;
@@ -44,6 +46,7 @@ export interface IKeyboardDefinition {
   readonly otherPlaceHowToGet: string;
   readonly otherPlaceSourceCodeEvidence: string;
   readonly otherPlacePublisherEvidence: string;
+  readonly organizationEvidence: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
 }
@@ -74,6 +77,25 @@ export interface IFetchKeyboardDefinitionStatsResult extends IResult {
   stats?: IKeyboardDefinitionStats;
 }
 
+export interface IOrganization {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly iconImageUrl: string;
+  readonly websiteUrl: string;
+  readonly contactEmailAddress: string;
+  readonly contactPersonName: string;
+  readonly contactTel: string;
+  readonly contactAddress: string;
+  readonly members: string[];
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
+}
+
+export interface IFetchOrganizationResult extends IResult {
+  organization?: IOrganization;
+}
+
 /* eslint-disable no-unused-vars */
 export interface IStorage {
   fetchAdminUsers(): Promise<string[]>;
@@ -89,5 +111,6 @@ export interface IStorage {
     rejectReason: string
   ): Promise<IResult>;
   fetchKeyboardDefinitionStats(): Promise<IFetchKeyboardDefinitionStatsResult>;
+  fetchOrganization(id: string): Promise<IFetchOrganizationResult>;
 }
 /* eslint-enable no-unused-vars */

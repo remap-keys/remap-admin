@@ -5,6 +5,7 @@ import {
   IKeyboardDefinitionDetail,
   IKeyboardDefinitionStats,
   IKeyboardDefinitionStatus,
+  IOrganization,
 } from '../services/storage/Storage';
 
 const NotifyType = ['success', 'warning', 'error', 'info'] as const;
@@ -108,6 +109,7 @@ export const REVIEW_DEFINITION_DETAIL_ACTIONS = '@ReviewDefinitionDetail';
 export const REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_DETAIL = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateKeyboardDefinitionDetail`;
 export const REVIEW_DEFINITION_DETAIL_UPDATE_KEYBOARD_DEFINITION_STATUS = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateKeyboardDefinitionStatus`;
 export const REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateRejectReason`;
+export const REVIEW_DEFINITION_DETAIL_UPDATE_ORGANIZATION = `${REVIEW_DEFINITION_DETAIL_ACTIONS}/UpdateOrganization`;
 export const ReviewDefinitionDetailActions = {
   updateKeyboardDefinitionDetail: (
     keyboardDefinitionDetail: IKeyboardDefinitionDetail
@@ -127,6 +129,12 @@ export const ReviewDefinitionDetailActions = {
     return {
       type: REVIEW_DEFINITION_DETAIL_UPDATE_REJECT_REASON,
       value: reason,
+    };
+  },
+  updateOrganization: (organization: IOrganization) => {
+    return {
+      type: REVIEW_DEFINITION_DETAIL_UPDATE_ORGANIZATION,
+      value: organization,
     };
   },
 };
@@ -191,6 +199,29 @@ export const ReviewActionsThunk = {
         )
       );
       return;
+    }
+    if (
+      definitionDetailResult.keyboardDefinitionDetail!.authorType ===
+      'organization'
+    ) {
+      const organizationResult = await storage.instance.fetchOrganization(
+        definitionDetailResult.keyboardDefinitionDetail!.organizationId!
+      );
+      if (!organizationResult.success) {
+        console.error(organizationResult.cause!);
+        dispatch(
+          NotificationActions.addError(
+            organizationResult.error!,
+            organizationResult.cause
+          )
+        );
+        return;
+      }
+      dispatch(
+        ReviewDefinitionDetailActions.updateOrganization(
+          organizationResult.organization!
+        )
+      );
     }
     dispatch(
       ReviewDefinitionDetailActions.updateKeyboardDefinitionDetail(
