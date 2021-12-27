@@ -7,6 +7,7 @@ import {
   IFetchKeyboardDefinitionDetailResult,
   IFetchKeyboardDefinitionListResult,
   IFetchKeyboardDefinitionStatsResult,
+  IFetchOrganizationResult,
   IKeyboardDefinitionStatus,
   IResult,
   IStorage,
@@ -46,6 +47,44 @@ export class FirebaseProvider implements IAuth, IStorage {
       return documentSnapshot.data()!.users;
     } else {
       return [];
+    }
+  }
+
+  async fetchOrganization(id: string): Promise<IFetchOrganizationResult> {
+    try {
+      const command = this.functions.httpsCallable('fetchOrganizationById');
+      const httpsCallableResult = await command({ id });
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+          organization: {
+            id: result.organization.id,
+            name: result.organization.name,
+            description: result.organization.description,
+            iconImageUrl: result.organization.iconImageUrl,
+            websiteUrl: result.organization.websiteUrl,
+            contactEmailAddress: result.organization.contactEmailAddress,
+            contactPersonName: result.organization.contactPersonName,
+            contactTel: result.organization.contactTel,
+            contactAddress: result.organization.contactAddress,
+            members: result.organization.members,
+            createdAt: result.organization.createdAt,
+            updatedAt: result.organization.updatedAt,
+          },
+        };
+      } else {
+        return {
+          success: false,
+          error: `Fetching an organization failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Fetching an organization failed.',
+        cause: error,
+      };
     }
   }
 
@@ -114,7 +153,9 @@ export class FirebaseProvider implements IAuth, IStorage {
           success: true,
           keyboardDefinitionDetail: {
             id: result.keyboardDefinitionDetail.id,
+            authorType: result.keyboardDefinitionDetail.authorType,
             authorUid: result.keyboardDefinitionDetail.authorUid,
+            organizationId: result.keyboardDefinitionDetail.organizationId,
             name: result.keyboardDefinitionDetail.name,
             vendorId: result.keyboardDefinitionDetail.vendorId,
             productId: result.keyboardDefinitionDetail.productId,
@@ -143,6 +184,8 @@ export class FirebaseProvider implements IAuth, IStorage {
               result.keyboardDefinitionDetail.otherPlaceSourceCodeEvidence,
             otherPlacePublisherEvidence:
               result.keyboardDefinitionDetail.otherPlacePublisherEvidence,
+            organizationEvidence:
+              result.keyboardDefinitionDetail.organizationEvidence,
             contactInformation:
               result.keyboardDefinitionDetail.contactInformation,
           },

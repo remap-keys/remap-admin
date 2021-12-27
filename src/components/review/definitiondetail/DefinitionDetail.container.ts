@@ -14,6 +14,7 @@ const mapStateToProps = (state: RootState) => {
     keyboardDefinitionStatus:
       state.review.definitiondetail.keyboardDefinitionStatus,
     rejectReason: state.review.definitiondetail.rejectReason,
+    organization: state.entities.organization,
   };
 };
 export type DefinitionDetailStateType = ReturnType<typeof mapStateToProps>;

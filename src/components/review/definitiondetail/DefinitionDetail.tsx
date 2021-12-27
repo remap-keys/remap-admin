@@ -262,6 +262,36 @@ export default class DefinitionDetail extends React.Component<
                       </div>
                       <div className="definition-detail-form-row">
                         <TextField
+                          id="definition-detail-author-type"
+                          label="Author Type"
+                          variant="outlined"
+                          value={
+                            this.props.keyboardDefinitionDetail!.authorType ===
+                            'individual'
+                              ? 'Individual'
+                              : 'Organization'
+                          }
+                          InputProps={{
+                            readOnly: true,
+                          }}
+                        />
+                      </div>
+                      {this.props.keyboardDefinitionDetail!.authorType ===
+                      'organization' ? (
+                        <div className="definition-detail-form-row">
+                          <TextField
+                            id="definition-detail-organization"
+                            label="Organization"
+                            variant="outlined"
+                            value={this.props.organization!.name}
+                            InputProps={{
+                              readOnly: true,
+                            }}
+                          />
+                        </div>
+                      ) : null}
+                      <div className="definition-detail-form-row">
+                        <TextField
                           id="definition-detail-github-uid"
                           label="GitHub User ID"
                           variant="outlined"
@@ -348,6 +378,11 @@ export default class DefinitionDetail extends React.Component<
                         }
                       />
                       <EvidenceForOtherPlaceRow
+                        keyboardDefinitionDetail={
+                          this.props.keyboardDefinitionDetail!
+                        }
+                      />
+                      <EvidenceForOrganization
                         keyboardDefinitionDetail={
                           this.props.keyboardDefinitionDetail!
                         }
@@ -672,6 +707,32 @@ function MenuUI(props: MenuUIProps) {
           {menuItems}
         </Menu>
       </React.Fragment>
+    );
+  } else {
+    return null;
+  }
+}
+
+type EvidenceForOrganizationProps = {
+  keyboardDefinitionDetail: IKeyboardDefinitionDetail;
+};
+
+function EvidenceForOrganization(props: EvidenceForOrganizationProps) {
+  if (props.keyboardDefinitionDetail.authorType === 'organization') {
+    return (
+      <div className="definition-detail-form-row">
+        <TextField
+          id="definition-detail-organization-evidence"
+          label="Evidence for Organization"
+          variant="outlined"
+          multiline
+          rows={4}
+          value={props.keyboardDefinitionDetail.organizationEvidence || ''}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+      </div>
     );
   } else {
     return null;
