@@ -7,6 +7,8 @@ import {
   IKeyboardDefinitionStats,
   IKeyboardDefinitionStatus,
   IOrganization,
+  IOrganizationMember,
+  IOrganizationWithMembers,
   IStorage,
   KeyboardDefinitionStatus,
 } from '../services/storage/Storage';
@@ -21,11 +23,22 @@ export const ReviewPhase: { [p in IReviewPhase]: IReviewPhase } = {
   detail: 'detail',
 };
 
+export const ALL_ORGANIZATIONS_PHASE = [
+  'init',
+  'list',
+  'processing',
+  'detail',
+] as const;
+type organizationsPhaseTuple = typeof ALL_ORGANIZATIONS_PHASE;
+export type IOrganizationsPhase = organizationsPhaseTuple[number];
+
 export type RootState = {
   entities: {
     keyboardDefinitionList: IKeyboardDefinition[];
     keyboardDefinitionDetail: IKeyboardDefinitionDetail | null;
     organization: IOrganization | null;
+    organizations: IOrganizationWithMembers[];
+    organizationMembers: IOrganizationMember[];
   };
   app: {
     buildNumber: number;
@@ -51,6 +64,11 @@ export type RootState = {
       rejectReason: string;
     };
   };
+  organizations: {
+    app: {
+      organizationsPhase: IOrganizationsPhase;
+    };
+  };
 };
 
 const firebaseProvider = new FirebaseProvider();
@@ -60,6 +78,8 @@ export const INIT_STATE: RootState = {
     keyboardDefinitionList: [],
     keyboardDefinitionDetail: null,
     organization: null,
+    organizations: [],
+    organizationMembers: [],
   },
   app: {
     buildNumber: buildInfo.buildNumber,
@@ -89,6 +109,11 @@ export const INIT_STATE: RootState = {
     definitiondetail: {
       keyboardDefinitionStatus: KeyboardDefinitionStatus.draft,
       rejectReason: '',
+    },
+  },
+  organizations: {
+    app: {
+      organizationsPhase: 'init',
     },
   },
 };

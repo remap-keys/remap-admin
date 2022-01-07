@@ -1,30 +1,31 @@
-import { ReviewActionsType, ReviewStateType } from './Review.container';
+import React from 'react';
+import {
+  OrganizationsActionsType,
+  OrganizationsStateType,
+} from './Organizations.container';
 import { ProviderContext, withSnackbar } from 'notistack';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { NotificationItem } from '../../actions/actions';
 import { Button, CssBaseline } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import React from 'react';
 import Header from '../common/header/Header.container';
 import Content from './content/Content.container';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-type ParamsType = {
-  definitionId: string;
-};
+type ParamsType = {};
 type OwnProps = {};
-type ReviewProps = OwnProps &
-  Partial<ReviewStateType> &
-  Partial<ReviewActionsType> &
+type OrganizationsProps = OwnProps &
+  Partial<OrganizationsActionsType> &
+  Partial<OrganizationsStateType> &
   ProviderContext &
   RouteComponentProps<ParamsType>;
 type OwnState = {
   signedIn: boolean;
 };
 
-class Review extends React.Component<ReviewProps, OwnState> {
+class Organizations extends React.Component<OrganizationsProps, OwnState> {
   private displayedNotificationIds: string[] = [];
 
-  constructor(props: ReviewProps) {
+  constructor(props: OrganizationsProps) {
     super(props);
     this.state = {
       signedIn: true,
@@ -41,7 +42,7 @@ class Review extends React.Component<ReviewProps, OwnState> {
     ];
   };
 
-  private updateNotifications() {
+  updateNotifications() {
     this.props.notifications!.forEach((item: NotificationItem) => {
       if (this.displayedNotificationIds.includes(item.key)) return;
 
@@ -76,12 +77,7 @@ class Review extends React.Component<ReviewProps, OwnState> {
               signedIn: true,
             });
             this.updateNotifications();
-            const definitionId = this.props.match.params.definitionId;
-            if (definitionId) {
-              this.props.updateKeyboardDefinitionDetail!(definitionId);
-            } else {
-              this.props.updateKeyboardDefinitionList!();
-            }
+            this.props.updateOrganizations!();
           } else {
             this.setState({ signedIn: false });
           }
@@ -124,4 +120,4 @@ class Review extends React.Component<ReviewProps, OwnState> {
   }
 }
 
-export default withRouter(withSnackbar(Review));
+export default withRouter(withSnackbar(Organizations));

@@ -93,8 +93,23 @@ export interface IOrganization {
   readonly updatedAt: Date;
 }
 
+export interface IOrganizationMember {
+  readonly uid: string;
+  readonly email: string;
+  readonly displayName: string;
+}
+
+export interface IOrganizationWithMembers {
+  organization: IOrganization;
+  organizationMembers: IOrganizationMember[];
+}
+
 export interface IFetchOrganizationResult extends IResult {
-  organization?: IOrganization;
+  organizationWithMembers?: IOrganizationWithMembers;
+}
+
+export interface IFetchOrganizationsResult extends IResult {
+  organizations?: IOrganizationWithMembers[];
 }
 
 /* eslint-disable no-unused-vars */
@@ -113,5 +128,6 @@ export interface IStorage {
   ): Promise<IResult>;
   fetchKeyboardDefinitionStats(): Promise<IFetchKeyboardDefinitionStatsResult>;
   fetchOrganization(id: string): Promise<IFetchOrganizationResult>;
+  fetchOrganizations(): Promise<IFetchOrganizationsResult>;
 }
 /* eslint-enable no-unused-vars */

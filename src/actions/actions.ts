@@ -1,4 +1,9 @@
-import { IReviewPhase, ReviewPhase, RootState } from '../store/state';
+import {
+  IOrganizationsPhase,
+  IReviewPhase,
+  ReviewPhase,
+  RootState,
+} from '../store/state';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import {
   IKeyboardDefinition,
@@ -6,6 +11,8 @@ import {
   IKeyboardDefinitionStats,
   IKeyboardDefinitionStatus,
   IOrganization,
+  IOrganizationMember,
+  IOrganizationWithMembers,
 } from '../services/storage/Storage';
 
 const NotifyType = ['success', 'warning', 'error', 'info'] as const;
@@ -139,11 +146,53 @@ export const ReviewDefinitionDetailActions = {
   },
 };
 
+export const ORGANIZATIONS_APP_ACTIONS = '@Organizations!App';
+export const ORGANIZATIONS_APP_UPDATE_PHASE = `${ORGANIZATIONS_APP_ACTIONS}/UpdatePhase`;
+export const OrganizationsAppActions = {
+  updatePhase: (phase: IOrganizationsPhase) => {
+    return {
+      type: ORGANIZATIONS_APP_UPDATE_PHASE,
+      value: phase,
+    };
+  },
+};
+
+export const ORGANIZATIONS_LIST_ACTIONS = '@OrganizationsList';
+export const ORGANIZATIONS_LIST_UPDATE_ORGANIZATIONS = `${ORGANIZATIONS_LIST_ACTIONS}/UpdateOrganizations`;
+export const OrganizationsListActions = {
+  updateOrganizations: (organizations: IOrganizationWithMembers[]) => {
+    return {
+      type: ORGANIZATIONS_LIST_UPDATE_ORGANIZATIONS,
+      value: organizations,
+    };
+  },
+};
+
+export const ORGANIZATION_DETAIL_ACTIONS = '@OrganizationDetail';
+export const ORGANIZATION_DETAIL_UPDATE_ORGANIZATION = `${ORGANIZATION_DETAIL_ACTIONS}/UpdateOrganization`;
+export const ORGANIZATION_DETAIL_UPDATE_ORGANIZATION_MEMBERS = `${ORGANIZATION_DETAIL_ACTIONS}/UpdateOrganizationMembers`;
+export const OrganizationDetailActions = {
+  updateOrganization: (organization: IOrganization) => {
+    return {
+      type: ORGANIZATION_DETAIL_UPDATE_ORGANIZATION,
+      value: organization,
+    };
+  },
+  updateOrganizationMembers: (organizationMembers: IOrganizationMember[]) => {
+    return {
+      type: ORGANIZATION_DETAIL_UPDATE_ORGANIZATION_MEMBERS,
+      value: organizationMembers,
+    };
+  },
+};
+
 type ActionTypes = ReturnType<
   | typeof ReviewAppActions[keyof typeof ReviewAppActions]
   | typeof ReviewDefinitionListActions[keyof typeof ReviewDefinitionListActions]
   | typeof ReviewDefinitionDetailActions[keyof typeof ReviewDefinitionDetailActions]
   | typeof NotificationActions[keyof typeof NotificationActions]
+  | typeof OrganizationsListActions[keyof typeof OrganizationsListActions]
+  | typeof OrganizationDetailActions[keyof typeof OrganizationDetailActions]
 >;
 type ThunkPromiseAction<T> = ThunkAction<
   Promise<T>,
@@ -151,6 +200,7 @@ type ThunkPromiseAction<T> = ThunkAction<
   undefined,
   ActionTypes
 >;
+
 export const ReviewActionsThunk = {
   // eslint-disable-next-line no-undef
   updateKeyboardDefinitionList: (): ThunkPromiseAction<void> => async (
@@ -219,7 +269,7 @@ export const ReviewActionsThunk = {
       }
       dispatch(
         ReviewDefinitionDetailActions.updateOrganization(
-          organizationResult.organization!
+          organizationResult.organizationWithMembers!.organization
         )
       );
     }
@@ -279,5 +329,60 @@ export const ReviewActionsThunk = {
     dispatch(
       ReviewDefinitionListActions.updateKeyboardDefinitionStats(result.stats!)
     );
+  },
+};
+
+export const OrganizationsActionsThunk = {
+  updateOrganizations: (): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    // eslint-disable-next-line no-unused-vars
+    getState: () => RootState
+  ) => {
+    dispatch(OrganizationsAppActions.updatePhase('processing'));
+    const { storage } = getState();
+    const result = await storage.instance!.fetchOrganizations();
+    if (!result.success) {
+      console.error(result.cause!);
+      dispatch(NotificationActions.addError(result.error!, result.cause));
+      return;
+    }
+    dispatch(
+      OrganizationsListActions.updateOrganizations(result.organizations!)
+    );
+    dispatch(OrganizationsAppActions.updatePhase('list'));
+  },
+
+  updateOrganization: (
+    organizationId: string
+  ): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    getState: () => RootState
+  ) => {
+    dispatch(OrganizationsAppActions.updatePhase('processing'));
+    const { storage } = getState();
+    const organizationResult = await storage.instance.fetchOrganization(
+      organizationId
+    );
+    if (!organizationResult.success) {
+      console.error(organizationResult.cause!);
+      dispatch(
+        NotificationActions.addError(
+          organizationResult.error!,
+          organizationResult.cause
+        )
+      );
+      return;
+    }
+    dispatch(
+      OrganizationDetailActions.updateOrganization(
+        organizationResult.organizationWithMembers!.organization
+      )
+    );
+    dispatch(
+      OrganizationDetailActions.updateOrganizationMembers(
+        organizationResult.organizationWithMembers!.organizationMembers
+      )
+    );
+    dispatch(OrganizationsAppActions.updatePhase('detail'));
   },
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.scss';
 import { HeaderActionsType, HeaderStateType } from './Header.container';
-import { Logo } from '../../common/logo/Logo';
+import { Logo } from '../logo/Logo';
 
 type HeaderState = {};
 type OwnProps = {};
