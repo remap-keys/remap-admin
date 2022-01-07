@@ -4,7 +4,6 @@ import Organizations from './Organizations';
 import {
   NotificationActions,
   OrganizationsActionsThunk,
-  OrganizationsListActions,
 } from '../../actions/actions';
 
 const mapStateToProps = (state: RootState) => {

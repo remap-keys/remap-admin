@@ -56,6 +56,7 @@ export default class OrganizationsList extends React.Component<
 
 type OrganizationProps = {
   organization: IOrganization;
+  // eslint-disable-next-line no-unused-vars
   updateOrganization: (organizationId: string) => void;
 };
 
