@@ -37,8 +37,6 @@ export class FirebaseProvider implements IAuth, IStorage {
     this.db = app.firestore();
     this.auth = app.auth();
     this.functions = app.functions(FUNCTIONS_REGION);
-    // FIXME Remove!!!
-    this.functions.useEmulator('localhost', 5001);
   }
 
   async fetchAdminUsers(): Promise<string[]> {
