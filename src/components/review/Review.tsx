@@ -4,7 +4,7 @@ import { NotificationItem } from '../../actions/actions';
 import { Button, CssBaseline } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import React from 'react';
-import Header from './header/Header.container';
+import Header from '../common/header/Header.container';
 import Content from './content/Content.container';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
