@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { StyledComponentProps, withStyles } from '@material-ui/core/styles';
 import Review from './components/review/Review.container';
 import Top from './components/top/Top.container';
+import Organizations from './components/organizations/Organizations.container';
 
 class App extends React.Component<StyledComponentProps, {}> {
   constructor(
@@ -34,6 +35,7 @@ class App extends React.Component<StyledComponentProps, {}> {
           <Switch>
             <Route exact path="/review" component={Review} />
             <Route path="/review/:definitionId" component={Review} />
+            <Route exact path="/organizations" component={Organizations} />
             <Route component={Top} />
           </Switch>
         </BrowserRouter>

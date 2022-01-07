@@ -8,6 +8,7 @@ import {
   IFetchKeyboardDefinitionListResult,
   IFetchKeyboardDefinitionStatsResult,
   IFetchOrganizationResult,
+  IFetchOrganizationsResult,
   IKeyboardDefinitionStatus,
   IResult,
   IStorage,
@@ -36,6 +37,8 @@ export class FirebaseProvider implements IAuth, IStorage {
     this.db = app.firestore();
     this.auth = app.auth();
     this.functions = app.functions(FUNCTIONS_REGION);
+    // FIXME Remove!!!
+    this.functions.useEmulator('localhost', 5001);
   }
 
   async fetchAdminUsers(): Promise<string[]> {
@@ -58,19 +61,9 @@ export class FirebaseProvider implements IAuth, IStorage {
       if (result.success) {
         return {
           success: true,
-          organization: {
-            id: result.organization.id,
-            name: result.organization.name,
-            description: result.organization.description,
-            iconImageUrl: result.organization.iconImageUrl,
-            websiteUrl: result.organization.websiteUrl,
-            contactEmailAddress: result.organization.contactEmailAddress,
-            contactPersonName: result.organization.contactPersonName,
-            contactTel: result.organization.contactTel,
-            contactAddress: result.organization.contactAddress,
-            members: result.organization.members,
-            createdAt: result.organization.createdAt,
-            updatedAt: result.organization.updatedAt,
+          organizationWithMembers: {
+            organization: result.organization,
+            organizationMembers: result.organizationMembers,
           },
         };
       } else {
@@ -83,6 +76,31 @@ export class FirebaseProvider implements IAuth, IStorage {
       return {
         success: false,
         error: 'Fetching an organization failed.',
+        cause: error,
+      };
+    }
+  }
+
+  async fetchOrganizations(): Promise<IFetchOrganizationsResult> {
+    try {
+      const command = this.functions.httpsCallable('fetchOrganizations');
+      const httpsCallableResult = await command();
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+          organizations: result.organizations!,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Fetching organizations failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Fetching organizations failed.',
         cause: error,
       };
     }

@@ -19,6 +19,14 @@ import {
   REVIEW_DEFINITION_LIST_UPDATE_NAME_FILTER,
   REVIEW_DEFINITION_LIST_UPDATE_KEYBOARD_DEFINITION_STATS,
   REVIEW_DEFINITION_DETAIL_UPDATE_ORGANIZATION,
+  OrganizationsAppActions,
+  ORGANIZATIONS_APP_ACTIONS,
+  ORGANIZATIONS_APP_UPDATE_PHASE,
+  ORGANIZATIONS_LIST_ACTIONS,
+  ORGANIZATIONS_LIST_UPDATE_ORGANIZATIONS,
+  ORGANIZATION_DETAIL_ACTIONS,
+  ORGANIZATION_DETAIL_UPDATE_ORGANIZATION,
+  ORGANIZATION_DETAIL_UPDATE_ORGANIZATION_MEMBERS,
 } from '../actions/actions';
 import { WritableDraft } from 'immer/dist/types/types-external';
 
@@ -34,8 +42,50 @@ const reducers = (state: RootState = INIT_STATE, action: Action) =>
       reviewDefinitionListReducer(action, draft);
     } else if (action.type.startsWith(REVIEW_DEFINITION_DETAIL_ACTIONS)) {
       reviewDefinitionDetailReducer(action, draft);
+    } else if (action.type.startsWith(ORGANIZATIONS_APP_ACTIONS)) {
+      organizationsAppReducer(action, draft);
+    } else if (action.type.startsWith(ORGANIZATIONS_LIST_ACTIONS)) {
+      organizationsListReducer(action, draft);
+    } else if (action.type.startsWith(ORGANIZATION_DETAIL_ACTIONS)) {
+      organizationDetailReducer(action, draft);
     }
   });
+
+const organizationsAppReducer = (
+  action: Action,
+  draft: WritableDraft<RootState>
+) => {
+  switch (action.type) {
+    case ORGANIZATIONS_APP_UPDATE_PHASE:
+      draft.organizations.app.organizationsPhase = action.value;
+      break;
+  }
+};
+
+const organizationsListReducer = (
+  action: Action,
+  draft: WritableDraft<RootState>
+) => {
+  switch (action.type) {
+    case ORGANIZATIONS_LIST_UPDATE_ORGANIZATIONS:
+      draft.entities.organizations = action.value;
+      break;
+  }
+};
+
+const organizationDetailReducer = (
+  action: Action,
+  draft: WritableDraft<RootState>
+) => {
+  switch (action.type) {
+    case ORGANIZATION_DETAIL_UPDATE_ORGANIZATION:
+      draft.entities.organization = action.value;
+      break;
+    case ORGANIZATION_DETAIL_UPDATE_ORGANIZATION_MEMBERS:
+      draft.entities.organizationMembers = action.value;
+      break;
+  }
+};
 
 const reviewAppReducer = (action: Action, draft: WritableDraft<RootState>) => {
   switch (action.type) {
