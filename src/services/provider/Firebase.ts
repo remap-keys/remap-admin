@@ -104,6 +104,50 @@ export class FirebaseProvider implements IAuth, IStorage {
     }
   }
 
+  async createOrganization(
+    name: string,
+    description: string,
+    websiteUrl: string,
+    iconImageUrl: string,
+    contactPersonName: string,
+    contactEmailAddress: string,
+    contactTel: string,
+    contactAddress: string,
+    memberEmailAddress: string
+  ): Promise<IResult> {
+    try {
+      const command = this.functions.httpsCallable('createOrganization');
+      const httpsCallableResult = await command({
+        name,
+        description,
+        websiteUrl,
+        iconImageUrl,
+        contactPersonName,
+        contactEmailAddress,
+        contactAddress,
+        contactTel,
+        memberEmailAddress,
+      });
+      const result = httpsCallableResult.data;
+      if (result.success) {
+        return {
+          success: true,
+        };
+      } else {
+        return {
+          success: false,
+          error: `Creating organization failed: ${result.errorCode}:${result.errorMessage}`,
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: 'Creating organization failed.',
+        cause: error,
+      };
+    }
+  }
+
   async fetchKeyboardDefinitionList(
     status: IKeyboardDefinitionStatus
   ): Promise<IFetchKeyboardDefinitionListResult> {

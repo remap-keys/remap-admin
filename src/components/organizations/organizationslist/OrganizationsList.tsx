@@ -24,15 +24,28 @@ export default class OrganizationsList extends React.Component<
     super(props);
   }
 
+  handleCreateOrganizationButtonClick = () => {
+    this.props.createOrganization!();
+  };
+
   render() {
     return (
       <div className="organizations-list-wrapper">
         <div className="organizations-list-container">
+          <div className="organizations-list-buttons">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleCreateOrganizationButtonClick}
+            >
+              + Organization
+            </Button>
+          </div>
           <div className="organizations-list">
             {this.props.organizations!.length > 0 ? (
               this.props.organizations!.map(
                 (organizationWithMembers, index) => (
-                  <div key={index} className="organization">
+                  <div key={index} className="organizations">
                     <OrganizationRow
                       organization={organizationWithMembers.organization}
                       updateOrganization={this.props.updateOrganization!}
@@ -41,7 +54,7 @@ export default class OrganizationsList extends React.Component<
                 )
               )
             ) : (
-              <div className="organization">
+              <div className="organizations">
                 <div className="no-registered-organization">
                   There is no organization.
                 </div>

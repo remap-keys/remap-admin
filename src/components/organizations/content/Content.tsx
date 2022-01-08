@@ -6,6 +6,7 @@ import Footer from '../../common/footer/Footer.container';
 import { IOrganizationsPhase } from '../../../store/state';
 import OrganizationsList from '../organizationslist/OrganizationsList.container';
 import OrganizationDetail from '../organizationdetail/OrganizationDetail.container';
+import OrganizationCreate from '../organizationcreate/OrganizationCreate.container';
 
 type ContentState = {};
 type OwnProps = {};
@@ -43,6 +44,8 @@ function Contents(props: ContentsProps) {
       return <OrganizationsList />;
     case 'detail':
       return <OrganizationDetail />;
+    case 'create':
+      return <OrganizationCreate />;
     default:
       throw new Error(`Unknown state.app.phase value: ${props.phase}`);
   }

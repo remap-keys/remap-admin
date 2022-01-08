@@ -28,6 +28,7 @@ export const ALL_ORGANIZATIONS_PHASE = [
   'list',
   'processing',
   'detail',
+  'create',
 ] as const;
 type organizationsPhaseTuple = typeof ALL_ORGANIZATIONS_PHASE;
 export type IOrganizationsPhase = organizationsPhaseTuple[number];
@@ -67,6 +68,17 @@ export type RootState = {
   organizations: {
     app: {
       organizationsPhase: IOrganizationsPhase;
+    };
+    organizationcreate: {
+      name: string;
+      description: string;
+      websiteUrl: string;
+      iconImageUrl: string;
+      contactEmailAddress: string;
+      contactPersonName: string;
+      contactTel: string;
+      contactAddress: string;
+      memberEmailAddress: string;
     };
   };
 };
@@ -114,6 +126,17 @@ export const INIT_STATE: RootState = {
   organizations: {
     app: {
       organizationsPhase: 'init',
+    },
+    organizationcreate: {
+      name: '',
+      description: '',
+      websiteUrl: '',
+      iconImageUrl: '',
+      contactAddress: '',
+      contactEmailAddress: '',
+      contactPersonName: '',
+      contactTel: '',
+      memberEmailAddress: '',
     },
   },
 };
