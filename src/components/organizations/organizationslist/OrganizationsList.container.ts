@@ -1,13 +1,16 @@
 import { connect } from 'react-redux';
 import { RootState } from '../../../store/state';
 import OrganizationsList from './OrganizationsList';
-import { OrganizationsActionsThunk } from '../../../actions/actions';
+import {
+  OrganizationCreateActions,
+  OrganizationsActionsThunk,
+  OrganizationsAppActions,
+} from '../../../actions/actions';
 
 const mapStateToProps = (state: RootState) => {
   return {
-    organizations: state.entities.organizations.sort(
-      (a, b) =>
-        b.organization.updatedAt.getTime() - a.organization.updatedAt.getTime()
+    organizations: [...state.entities.organizations].sort(
+      (a, b) => b.organization.updatedAt - a.organization.updatedAt
     ),
   };
 };
@@ -18,6 +21,10 @@ const mapDispatchToProps = (_dispatch: any) => {
   return {
     updateOrganization: (organizationId: string) => {
       _dispatch(OrganizationsActionsThunk.updateOrganization(organizationId));
+    },
+    createOrganization: () => {
+      _dispatch(OrganizationCreateActions.initialize());
+      _dispatch(OrganizationsAppActions.updatePhase('create'));
     },
   };
 };

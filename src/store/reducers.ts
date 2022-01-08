@@ -26,6 +26,17 @@ import {
   ORGANIZATION_DETAIL_ACTIONS,
   ORGANIZATION_DETAIL_UPDATE_ORGANIZATION,
   ORGANIZATION_DETAIL_UPDATE_ORGANIZATION_MEMBERS,
+  ORGANIZATION_CREATE_ACTIONS,
+  ORGANIZATION_CREATE_INITIALIZE,
+  ORGANIZATION_CREATE_UPDATE_NAME,
+  ORGANIZATION_CREATE_UPDATE_DESCRIPTION,
+  ORGANIZATION_CREATE_UPDATE_WEBSITE_URL,
+  ORGANIZATION_CREATE_UPDATE_ICON_IMAGE_URL,
+  ORGANIZATION_CREATE_UPDATE_CONTACT_TEL,
+  ORGANIZATION_CREATE_UPDATE_CONTACT_ADDRESS,
+  ORGANIZATION_CREATE_UPDATE_CONTACT_EMAIL_ADDRESS,
+  ORGANIZATION_CREATE_UPDATE_CONTACT_PERSON_NAME,
+  ORGANIZATION_CREATE_UPDATE_MEMBER_EMAIL_ADDRESS,
 } from '../actions/actions';
 import { WritableDraft } from 'immer/dist/types/types-external';
 
@@ -47,6 +58,8 @@ const reducers = (state: RootState = INIT_STATE, action: Action) =>
       organizationsListReducer(action, draft);
     } else if (action.type.startsWith(ORGANIZATION_DETAIL_ACTIONS)) {
       organizationDetailReducer(action, draft);
+    } else if (action.type.startsWith(ORGANIZATION_CREATE_ACTIONS)) {
+      organizationCreateReducer(action, draft);
     }
   });
 
@@ -82,6 +95,52 @@ const organizationDetailReducer = (
       break;
     case ORGANIZATION_DETAIL_UPDATE_ORGANIZATION_MEMBERS:
       draft.entities.organizationMembers = action.value;
+      break;
+  }
+};
+
+const organizationCreateReducer = (
+  action: Action,
+  draft: WritableDraft<RootState>
+) => {
+  switch (action.type) {
+    case ORGANIZATION_CREATE_INITIALIZE:
+      draft.organizations.organizationcreate.name = '';
+      draft.organizations.organizationcreate.description = '';
+      draft.organizations.organizationcreate.websiteUrl = '';
+      draft.organizations.organizationcreate.iconImageUrl = '';
+      draft.organizations.organizationcreate.contactAddress = '';
+      draft.organizations.organizationcreate.contactEmailAddress = '';
+      draft.organizations.organizationcreate.contactTel = '';
+      draft.organizations.organizationcreate.contactPersonName = '';
+      draft.organizations.organizationcreate.memberEmailAddress = '';
+      break;
+    case ORGANIZATION_CREATE_UPDATE_NAME:
+      draft.organizations.organizationcreate.name = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_DESCRIPTION:
+      draft.organizations.organizationcreate.description = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_WEBSITE_URL:
+      draft.organizations.organizationcreate.websiteUrl = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_ICON_IMAGE_URL:
+      draft.organizations.organizationcreate.iconImageUrl = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_CONTACT_ADDRESS:
+      draft.organizations.organizationcreate.contactAddress = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_CONTACT_EMAIL_ADDRESS:
+      draft.organizations.organizationcreate.contactEmailAddress = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_CONTACT_TEL:
+      draft.organizations.organizationcreate.contactTel = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_CONTACT_PERSON_NAME:
+      draft.organizations.organizationcreate.contactPersonName = action.value;
+      break;
+    case ORGANIZATION_CREATE_UPDATE_MEMBER_EMAIL_ADDRESS:
+      draft.organizations.organizationcreate.memberEmailAddress = action.value;
       break;
   }
 };

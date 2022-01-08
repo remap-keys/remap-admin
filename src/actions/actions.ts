@@ -186,6 +186,79 @@ export const OrganizationDetailActions = {
   },
 };
 
+export const ORGANIZATION_CREATE_ACTIONS = '@OrganizationCreate';
+export const ORGANIZATION_CREATE_INITIALIZE = `${ORGANIZATION_CREATE_ACTIONS}/Initialize`;
+export const ORGANIZATION_CREATE_UPDATE_NAME = `${ORGANIZATION_CREATE_ACTIONS}/UpdateName`;
+export const ORGANIZATION_CREATE_UPDATE_DESCRIPTION = `${ORGANIZATION_CREATE_ACTIONS}/UpdateDescription`;
+export const ORGANIZATION_CREATE_UPDATE_WEBSITE_URL = `${ORGANIZATION_CREATE_ACTIONS}/UpdateWebsiteUrl`;
+export const ORGANIZATION_CREATE_UPDATE_ICON_IMAGE_URL = `${ORGANIZATION_CREATE_ACTIONS}/UpdateIconImageUrl`;
+export const ORGANIZATION_CREATE_UPDATE_CONTACT_EMAIL_ADDRESS = `${ORGANIZATION_CREATE_ACTIONS}/UpdateContactEmailAddress`;
+export const ORGANIZATION_CREATE_UPDATE_CONTACT_ADDRESS = `${ORGANIZATION_CREATE_ACTIONS}/UpdateContactAddress`;
+export const ORGANIZATION_CREATE_UPDATE_CONTACT_TEL = `${ORGANIZATION_CREATE_ACTIONS}/UpdateContactTel`;
+export const ORGANIZATION_CREATE_UPDATE_CONTACT_PERSON_NAME = `${ORGANIZATION_CREATE_ACTIONS}/UpdateContactPersonName`;
+export const ORGANIZATION_CREATE_UPDATE_MEMBER_EMAIL_ADDRESS = `${ORGANIZATION_CREATE_ACTIONS}/UpdateMemberEmailAddress`;
+export const OrganizationCreateActions = {
+  initialize: () => {
+    return {
+      type: ORGANIZATION_CREATE_INITIALIZE,
+    };
+  },
+  updateName: (name: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_NAME,
+      value: name,
+    };
+  },
+  updateDescription: (description: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_DESCRIPTION,
+      value: description,
+    };
+  },
+  updateWebsiteUrl: (websiteUrl: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_WEBSITE_URL,
+      value: websiteUrl,
+    };
+  },
+  updateIconImageUrl: (iconImageUrl: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_ICON_IMAGE_URL,
+      value: iconImageUrl,
+    };
+  },
+  updateContactEmailAddress: (contactEmailAddress: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_CONTACT_EMAIL_ADDRESS,
+      value: contactEmailAddress,
+    };
+  },
+  updateContactAddress: (contactAddress: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_CONTACT_ADDRESS,
+      value: contactAddress,
+    };
+  },
+  updateContactTel: (contactTel: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_CONTACT_TEL,
+      value: contactTel,
+    };
+  },
+  updateContactPersonName: (contactPersonName: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_CONTACT_PERSON_NAME,
+      value: contactPersonName,
+    };
+  },
+  updateMemberEmailAddress: (memberEmailAddress: string) => {
+    return {
+      type: ORGANIZATION_CREATE_UPDATE_MEMBER_EMAIL_ADDRESS,
+      value: memberEmailAddress,
+    };
+  },
+};
+
 type ActionTypes = ReturnType<
   | typeof ReviewAppActions[keyof typeof ReviewAppActions]
   | typeof ReviewDefinitionListActions[keyof typeof ReviewDefinitionListActions]
@@ -384,5 +457,44 @@ export const OrganizationsActionsThunk = {
       )
     );
     dispatch(OrganizationsAppActions.updatePhase('detail'));
+  },
+
+  createOrganization: (): ThunkPromiseAction<void> => async (
+    dispatch: ThunkDispatch<RootState, undefined, ActionTypes>,
+    getState: () => RootState
+  ) => {
+    dispatch(OrganizationsAppActions.updatePhase('processing'));
+    const { organizations, storage } = getState();
+    const createResult = await storage.instance!.createOrganization(
+      organizations.organizationcreate.name,
+      organizations.organizationcreate.description,
+      organizations.organizationcreate.websiteUrl,
+      organizations.organizationcreate.iconImageUrl,
+      organizations.organizationcreate.contactPersonName,
+      organizations.organizationcreate.contactEmailAddress,
+      organizations.organizationcreate.contactTel,
+      organizations.organizationcreate.contactAddress,
+      organizations.organizationcreate.memberEmailAddress
+    );
+    if (!createResult.success) {
+      console.error(createResult.cause!);
+      dispatch(
+        NotificationActions.addError(createResult.error!, createResult.cause)
+      );
+      dispatch(OrganizationsAppActions.updatePhase('create'));
+      return;
+    }
+    const fetchResult = await storage.instance!.fetchOrganizations();
+    if (!fetchResult.success) {
+      console.error(fetchResult.cause!);
+      dispatch(
+        NotificationActions.addError(fetchResult.error!, fetchResult.cause)
+      );
+      return;
+    }
+    dispatch(
+      OrganizationsListActions.updateOrganizations(fetchResult.organizations!)
+    );
+    dispatch(OrganizationsAppActions.updatePhase('list'));
   },
 };

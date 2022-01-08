@@ -89,8 +89,8 @@ export interface IOrganization {
   readonly contactTel: string;
   readonly contactAddress: string;
   readonly members: string[];
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  readonly createdAt: number;
+  readonly updatedAt: number;
 }
 
 export interface IOrganizationMember {
@@ -129,5 +129,16 @@ export interface IStorage {
   fetchKeyboardDefinitionStats(): Promise<IFetchKeyboardDefinitionStatsResult>;
   fetchOrganization(id: string): Promise<IFetchOrganizationResult>;
   fetchOrganizations(): Promise<IFetchOrganizationsResult>;
+  createOrganization(
+    name: string,
+    description: string,
+    websiteUrl: string,
+    iconImageUrl: string,
+    contactPersonName: string,
+    contactEmailAddress: string,
+    contactTel: string,
+    contactAddress: string,
+    memberEmailAddress: string
+  ): Promise<IResult>;
 }
 /* eslint-enable no-unused-vars */
