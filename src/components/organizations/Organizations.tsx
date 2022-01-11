@@ -1,123 +1,111 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   OrganizationsActionsType,
   OrganizationsStateType,
 } from './Organizations.container';
 import { ProviderContext, withSnackbar } from 'notistack';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { NotificationItem } from '../../actions/actions';
 import { Button, CssBaseline } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Header from '../common/header/Header.container';
 import Content from './content/Content.container';
 
-type ParamsType = {};
 type OwnProps = {};
 type OrganizationsProps = OwnProps &
   Partial<OrganizationsActionsType> &
   Partial<OrganizationsStateType> &
-  ProviderContext &
-  RouteComponentProps<ParamsType>;
-type OwnState = {
-  signedIn: boolean;
-};
+  ProviderContext;
 
-class Organizations extends React.Component<OrganizationsProps, OwnState> {
-  private displayedNotificationIds: string[] = [];
+function Organizations(props: OrganizationsProps) {
+  const [signedIn, setSignedIn] = useState<boolean>(true);
+  const [displayedNotificationIds, setDisplayedNotificationIds] = useState<
+    string[]
+  >([]);
 
-  constructor(props: OrganizationsProps) {
-    super(props);
-    this.state = {
-      signedIn: true,
-    };
-  }
-
-  private storeDisplayedNotification = (key: string) => {
-    this.displayedNotificationIds = [...this.displayedNotificationIds, key];
+  const storeDisplayedNotification = (key: string) => {
+    setDisplayedNotificationIds([...displayedNotificationIds, key]);
   };
 
-  private removeDisplayedNotification = (key: string) => {
-    this.displayedNotificationIds = [
-      ...this.displayedNotificationIds.filter((k) => key !== k),
-    ];
+  const removeDisplayedNotification = (key: string) => {
+    setDisplayedNotificationIds([
+      ...displayedNotificationIds.filter((k) => key !== k),
+    ]);
   };
 
-  updateNotifications() {
-    this.props.notifications!.forEach((item: NotificationItem) => {
-      if (this.displayedNotificationIds.includes(item.key)) return;
+  const updateNotifications = () => {
+    props.notifications!.forEach((item: NotificationItem) => {
+      if (displayedNotificationIds.includes(item.key)) return;
 
-      this.props.enqueueSnackbar(item.message, {
+      props.enqueueSnackbar(item.message, {
         key: item.key,
         variant: item.type,
         autoHideDuration: 5000,
         onExited: (event, key: React.ReactText) => {
-          this.props.removeNotification!(key as string);
-          this.removeDisplayedNotification(key as string);
+          props.removeNotification!(key as string);
+          removeDisplayedNotification(key as string);
         },
+        // eslint-disable-next-line react/display-name
         action: (key: number) => (
           <Button
             onClick={() => {
-              this.props.closeSnackbar(key);
+              // eslint-disable-next-line react/prop-types
+              props.closeSnackbar(key);
             }}
           >
             <CloseIcon />
           </Button>
         ),
       });
-      this.storeDisplayedNotification(item.key);
+      storeDisplayedNotification(item.key);
     });
-  }
+  };
 
-  componentDidMount() {
-    this.props.auth!.subscribeAuthStatus((user) => {
+  useEffect(() => {
+    props.auth!.subscribeAuthStatus((user) => {
       if (user) {
-        this.props.storage!.fetchAdminUsers().then((users) => {
+        props.storage!.fetchAdminUsers().then((users) => {
           if (users.includes(user.email!)) {
-            this.setState({
-              signedIn: true,
-            });
-            this.updateNotifications();
-            this.props.updateOrganizations!();
+            setSignedIn(true);
+            updateNotifications();
+            props.updateOrganizations!();
           } else {
-            this.setState({ signedIn: false });
+            setSignedIn(false);
           }
         });
       } else {
-        this.props.auth!.signInWithGitHub().then(() => {
+        props.auth!.signInWithGitHub().then(() => {
           // N/A
         });
       }
     });
-  }
+  }, []);
 
-  componentDidUpdate() {
-    this.updateNotifications();
-  }
+  useEffect(() => {
+    updateNotifications();
+  }, [props.notifications]);
 
-  render() {
-    if (this.state.signedIn) {
-      return (
-        <React.Fragment>
-          <CssBaseline />
-          <Header />
-          <main>
-            <Content />
-          </main>
-        </React.Fragment>
-      );
-    } else {
-      return (
-        <React.Fragment>
-          <CssBaseline />
-          <div className="message-box-wrapper">
-            <div className="message-box">
-              <p>You are not allow to access to Remap Admin.</p>
-            </div>
+  if (signedIn) {
+    return (
+      <React.Fragment>
+        <CssBaseline />
+        <Header />
+        <main>
+          <Content />
+        </main>
+      </React.Fragment>
+    );
+  } else {
+    return (
+      <React.Fragment>
+        <CssBaseline />
+        <div className="message-box-wrapper">
+          <div className="message-box">
+            <p>You are not allow to access to Remap Admin.</p>
           </div>
-        </React.Fragment>
-      );
-    }
+        </div>
+      </React.Fragment>
+    );
   }
 }
 
-export default withRouter(withSnackbar(Organizations));
+export default withSnackbar(Organizations);
