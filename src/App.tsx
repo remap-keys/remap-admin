@@ -1,7 +1,7 @@
 import React from 'react';
 import { SnackbarProvider } from 'notistack';
 import './App.css';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StyledComponentProps, withStyles } from '@material-ui/core/styles';
 import Review from './components/review/Review.container';
 import Top from './components/top/Top.container';
@@ -32,12 +32,12 @@ class App extends React.Component<StyledComponentProps, {}> {
         }}
       >
         <BrowserRouter>
-          <Switch>
-            <Route exact path="/review" component={Review} />
-            <Route path="/review/:definitionId" component={Review} />
-            <Route exact path="/organizations" component={Organizations} />
-            <Route component={Top} />
-          </Switch>
+          <Routes>
+            <Route path="/review" element={<Review />} />
+            <Route path="/review/:definitionId" element={<Review />} />
+            <Route path="/organizations" element={<Organizations />} />
+            <Route path="/" element={<Top />} />
+          </Routes>
         </BrowserRouter>
       </SnackbarProvider>
     );
