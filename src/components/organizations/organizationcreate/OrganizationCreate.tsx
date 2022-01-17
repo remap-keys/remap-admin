@@ -4,8 +4,8 @@ import {
   OrganizationCreateActionsType,
   OrganizationCreateStateType,
 } from './OrganizationCreate.container';
-import { Card, CardContent, TextField } from '@material-ui/core';
-import { Button } from '@material-ui/core';
+import { Card, CardContent, TextField } from '@mui/material';
+import { Button } from '@mui/material';
 
 type OrganizationCreateState = {};
 type OwnProps = {};

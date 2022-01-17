@@ -20,18 +20,19 @@ import {
   Menu,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Step,
   StepLabel,
   Stepper,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   FirmwareCodePlace,
   IKeyboardDefinitionDetail,
   IKeyboardDefinitionStatus,
   KeyboardDefinitionStatus,
 } from '../../../services/storage/Storage';
-import { MoreVert } from '@material-ui/icons';
+import { MoreVert } from '@mui/icons-material';
 import { hexadecimal } from '../../../utils/StringUtils';
 import { RejectMessages } from './RejectMessages';
 
@@ -123,10 +124,8 @@ export default class DefinitionDetail extends React.Component<
     a.remove();
   };
 
-  handleRejectMessagesChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
-  ) => {
-    const value = event.target.value as number;
+  handleRejectMessagesChange = (event: SelectChangeEvent) => {
+    const value = Number(event.target.value);
     this.setState({ rejectMessage: value });
     const rejectReason = value !== -1 ? RejectMessages[value].long : '';
     this.props.updateRejectReason!(rejectReason);
@@ -192,7 +191,10 @@ export default class DefinitionDetail extends React.Component<
                       }
                     />
                   </div>
-                  <Stepper activeStep={activeStep}>
+                  <Stepper
+                    activeStep={activeStep}
+                    className="edit-keyboard-stepper"
+                  >
                     {statusSteps.map((label) => {
                       const stepProps = {
                         completed,
@@ -394,6 +396,7 @@ export default class DefinitionDetail extends React.Component<
                           </InputLabel>
                           <Select
                             labelId="definition-detail-status-select-label"
+                            label="Status"
                             id="definition-detail-status-select"
                             value={this.props.keyboardDefinitionStatus}
                             onChange={(event) =>
@@ -424,7 +427,7 @@ export default class DefinitionDetail extends React.Component<
                           label="Reject Reason"
                           placeholder="Please fill in the reason when this review request is rejected."
                           multiline
-                          rowsMax={4}
+                          maxRows={4}
                           value={this.props.rejectReason}
                           onChange={(e) =>
                             this.props.updateRejectReason!(e.target.value)
@@ -492,7 +495,7 @@ type RejectMessageRowProps = {
   rejectMessage: number;
   handleRejectMessagesChange: (
     // eslint-disable-next-line no-unused-vars
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
+    event: SelectChangeEvent
   ) => void;
 };
 
@@ -506,8 +509,9 @@ function RejectMessageRow(props: RejectMessageRowProps) {
           </InputLabel>
           <Select
             labelId="definition-detail-reject-message-select-label"
+            label="Reject Reason Template"
             id="definition-detail-reject-message-select"
-            value={props.rejectMessage}
+            value={String(props.rejectMessage)}
             onChange={props.handleRejectMessagesChange}
           >
             {RejectMessages.map((message, index) => {
@@ -680,11 +684,7 @@ function MenuUI(props: MenuUIProps) {
   const menuItems = [];
   if (props.keyboardDefinitionDetail) {
     menuItems.push(
-      <MenuItem
-        key="1"
-        onClick={props.handleDownloadJsonMenuClick}
-        button={true}
-      >
+      <MenuItem key="1" onClick={props.handleDownloadJsonMenuClick}>
         Download JSON
       </MenuItem>
     );

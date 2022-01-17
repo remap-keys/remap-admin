@@ -1,8 +1,8 @@
 import { ReviewActionsType, ReviewStateType } from './Review.container';
 import { ProviderContext, withSnackbar } from 'notistack';
 import { NotificationItem } from '../../actions/actions';
-import { Button, CssBaseline } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Button, CssBaseline } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import React, { useEffect, useState } from 'react';
 import Header from '../common/header/Header.container';
 import Content from './content/Content.container';

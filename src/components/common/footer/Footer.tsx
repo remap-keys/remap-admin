@@ -32,11 +32,18 @@ export default class Footer extends React.Component<
         </div>
         <div className="footer-contents">
           <a
-            href="https://docs.google.com/document/d/1Fo2-cbPcTNkckwJOl-YqnBuVeyREuYtyoY8mecdiUxE/edit"
+            href="https://remap-keys.app/docs/terms_of_use"
             target={'_blank'}
             rel={'noreferrer'}
           >
             Terms of Use
+          </a>
+          <a
+            href="https://remap-keys.app/docs/review_policy"
+            target={'_blank'}
+            rel={'noreferrer'}
+          >
+            Review Policy
           </a>
         </div>
         <div className="build-number">Build: {this.props.buildNumber}</div>

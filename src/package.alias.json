@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^4.11.2",
-    "@material-ui/icons": "^4.11.2",
+    "@mui/material": "^4.11.2",
+    "@mui/icons-material": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@types/moment": "^2.13.0",
     "ajv": "^7.0.3",
@@ -36,17 +36,10 @@
     "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "extends": ["react-app", "react-app/jest"]
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -92,13 +85,7 @@
     }
   },
   "lint-staged": {
-    "*.{html,css,scss,md,json,yaml}": [
-      "prettier --write",
-      "git add"
-    ],
-    "*.{js,jsx}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{html,css,scss,md,json,yaml}": ["prettier --write", "git add"],
+    "*.{js,jsx}": ["prettier --write", "git add"]
   }
 }
