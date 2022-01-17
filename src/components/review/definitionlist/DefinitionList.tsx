@@ -14,7 +14,7 @@ import {
   MenuItem,
   Select,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   IKeyboardDefinition,
   IKeyboardDefinitionStatus,
@@ -92,6 +92,7 @@ export default class DefinitionList extends React.Component<
                   </InputLabel>
                   <Select
                     labelId="definition-list-status-select-label"
+                    label="Status"
                     id="definition-list-status-select"
                     value={this.props.status}
                     onChange={this.handleChangeStatus}

@@ -12,8 +12,8 @@ import {
   ListItemText,
   TextField,
   Typography,
-} from '@material-ui/core';
-import { Button } from '@material-ui/core';
+} from '@mui/material';
+import { Button } from '@mui/material';
 
 type OrganizationDetailState = {};
 type OwnProps = {};

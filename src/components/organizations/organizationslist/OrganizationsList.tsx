@@ -4,7 +4,7 @@ import {
   OrganizationsListActionsType,
   OrganizationsListStateType,
 } from './OrganizationsList.container';
-import { Button, Card, CardContent } from '@material-ui/core';
+import { Button, Card, CardContent } from '@mui/material';
 import moment from 'moment-timezone';
 import { IOrganization } from '../../../services/storage/Storage';
 

@@ -15,6 +15,11 @@
 
   a {
     color: $primary-light;
+    margin-right: 16px;
+
+    &:last-child {
+      margin-right: auto;
+    }
   }
   .dev-team {
     text-align: start;

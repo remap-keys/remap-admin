@@ -1,7 +1,7 @@
 import React from 'react';
 import { ContentActionsType, ContentStateType } from './Content.container';
 import './Content.scss';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import Footer from '../../common/footer/Footer.container';
 import { IOrganizationsPhase } from '../../../store/state';
 import OrganizationsList from '../organizationslist/OrganizationsList.container';

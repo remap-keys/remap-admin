@@ -2,10 +2,11 @@ import React from 'react';
 import { SnackbarProvider } from 'notistack';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { StyledComponentProps, withStyles } from '@material-ui/core/styles';
+import { StyledComponentProps } from '@mui/material/styles';
 import Review from './components/review/Review.container';
 import Top from './components/top/Top.container';
 import Organizations from './components/organizations/Organizations.container';
+import { withStyles } from '@mui/styles';
 
 class App extends React.Component<StyledComponentProps, {}> {
   constructor(
